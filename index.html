@@ -1,0 +1,4245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CODE ALPHA — Futuristic Student Grade Tracker</title>
+  <meta name="description" content="CODE ALPHA: Futuristic single-file Student Grade Tracker featuring strict input validation, live dual-ring Percentage and CGPA analyzers, All Students Summary Report, Human Evolution background, and hilarious meme voice reactions." />
+
+  <!-- Google Fonts: Orbitron, Rajdhani, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. CSS RESET & FUTURISTIC THEME TOKENS
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #030712;
+      --bg-card: rgba(10, 18, 42, 0.78);
+      --bg-card-border: rgba(0, 243, 255, 0.22);
+      --bg-card-hover: rgba(16, 28, 64, 0.9);
+
+      --cyan: #00f3ff;
+      --cyan-glow: rgba(0, 243, 255, 0.45);
+      --violet: #b026ff;
+      --violet-glow: rgba(176, 38, 255, 0.45);
+      --magenta: #ff007f;
+      --gold: #ffd700;
+      --gold-glow: rgba(255, 215, 0, 0.5);
+      --red-alert: #ff2a55;
+      --red-glow: rgba(255, 42, 85, 0.6);
+      --emerald: #00ffa3;
+
+      --text-main: #f0f6fc;
+      --text-muted: #8b9bb4;
+      --text-dim: #50617a;
+
+      --font-display: 'Orbitron', -apple-system, sans-serif;
+      --font-tech: 'Rajdhani', sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+
+      --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Screen Shake Animation on Level 3 Low Performance */
+    body.screen-shake {
+      animation: shakeScreen 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes shakeScreen {
+      10%, 90% { transform: translate3d(-3px, 2px, 0) rotate(-0.5deg); }
+      20%, 80% { transform: translate3d(5px, -3px, 0) rotate(0.8deg); }
+      30%, 50%, 70% { transform: translate3d(-6px, 4px, 0) rotate(-1deg); }
+      40%, 60% { transform: translate3d(6px, -4px, 0) rotate(1deg); }
+    }
+
+    /* ==========================================================================
+       2. CINEMATIC HUMAN EVOLUTION TO FUTURE CANVAS BACKGROUND
+       ========================================================================== */
+    #evolution-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .background-vignette {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 40%, rgba(3, 7, 18, 0.42) 0%, rgba(3, 7, 18, 0.88) 80%, #030712 100%);
+    }
+
+    .cyber-grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+      pointer-events: none;
+      background-image: 
+        linear-gradient(to right, rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(176, 38, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.65;
+    }
+
+    /* ==========================================================================
+       3. FX CANVAS (FLOWER BLOOM, CONFETTI, SPARKLES, HOLOGRAPHIC SCAN)
+       ========================================================================== */
+    #fx-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       4. MAIN APP CONTAINER
+       ========================================================================== */
+    .app-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ==========================================================================
+       5. HEADER & CODE ALPHA BRANDING
+       ========================================================================== */
+    .cyber-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 24px;
+      background: rgba(8, 15, 36, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(0, 243, 255, 0.3);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-emblem {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(176, 38, 255, 0.25));
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      box-shadow: 0 0 20px var(--cyan-glow);
+      animation: pulse-emblem 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulse-emblem {
+      0% { box-shadow: 0 0 15px var(--cyan-glow); }
+      100% { box-shadow: 0 0 30px var(--violet-glow), 0 0 15px var(--cyan-glow); }
+    }
+
+    .brand-emblem svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--cyan);
+      filter: drop-shadow(0 0 6px var(--cyan));
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      font-weight: 900;
+      letter-spacing: 2.5px;
+      background: linear-gradient(90deg, #ffffff 0%, var(--cyan) 50%, #d896ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-title .badge {
+      font-family: var(--font-tech);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(0, 243, 255, 0.12);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      -webkit-text-fill-color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* Sound and Action Header Controls */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hud-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      background: rgba(12, 22, 48, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.35);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      user-select: none;
+    }
+
+    .hud-btn:hover {
+      background: rgba(0, 243, 255, 0.18);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 16px var(--cyan-glow);
+      transform: translateY(-2px);
+    }
+
+    .hud-btn.active {
+      border-color: var(--emerald);
+      color: var(--emerald);
+      background: rgba(0, 255, 163, 0.12);
+      box-shadow: 0 0 12px rgba(0, 255, 163, 0.3);
+    }
+
+    .hud-btn.active:hover {
+      background: rgba(0, 255, 163, 0.22);
+    }
+
+    .hud-btn.muted {
+      border-color: var(--red-alert);
+      color: var(--red-alert);
+      background: rgba(255, 42, 85, 0.1);
+    }
+
+    .hud-btn.records-btn {
+      border-color: var(--violet);
+      color: #e0aaff;
+    }
+    .hud-btn.records-btn:hover {
+      background: rgba(176, 38, 255, 0.2);
+      border-color: var(--violet);
+      color: #ffffff;
+      box-shadow: 0 0 16px var(--violet-glow);
+    }
+
+    /* ==========================================================================
+       6. STRICT VALIDATION ERROR NOTIFICATION BANNER
+       ========================================================================== */
+    .validation-error-banner {
+      display: none;
+      background: rgba(40, 6, 16, 0.95);
+      border: 2px solid var(--red-alert);
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: #ffffff;
+      box-shadow: 0 0 25px var(--red-glow);
+      animation: alertSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    @keyframes alertSlideDown {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .val-error-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .val-error-icon {
+      font-size: 1.8rem;
+      color: var(--red-alert);
+      animation: pulseAlert 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseAlert {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px var(--red-alert)); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 12px var(--red-alert)); }
+    }
+
+    .val-error-text {
+      font-family: var(--font-tech);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #ff94a8;
+    }
+
+    .val-error-text strong {
+      color: #ffffff;
+      text-transform: uppercase;
+      font-family: var(--font-display);
+      letter-spacing: 1.2px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .val-close-btn {
+      background: none;
+      border: none;
+      color: #ff94a8;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: var(--transition-smooth);
+    }
+    .val-close-btn:hover {
+      color: #ffffff;
+      transform: scale(1.2);
+    }
+
+    /* ==========================================================================
+       7. REACTION MODAL / BANNER (FUNNY MEME VOICES & CELEBRATION)
+       ========================================================================== */
+    .reaction-hud-banner {
+      display: none;
+      position: relative;
+      background: rgba(10, 18, 42, 0.95);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 20px;
+      padding: 24px 30px;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.8), 0 0 30px var(--cyan-glow);
+      animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      overflow: hidden;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92) translateY(15px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .reaction-hud-banner.level-1 {
+      border-color: var(--gold);
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--gold-glow);
+    }
+
+    .reaction-hud-banner.level-2 {
+      border-color: var(--cyan);
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--cyan-glow);
+    }
+
+    .reaction-hud-banner.level-3 {
+      border-color: var(--red-alert);
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--red-glow);
+    }
+
+    .reaction-hud-banner.level-neutral {
+      border-color: var(--violet);
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--violet-glow);
+    }
+
+    .reaction-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .reaction-tagline {
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    .level-1 .reaction-tagline {
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+    }
+    .level-2 .reaction-tagline {
+      background: rgba(0, 243, 255, 0.15);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+    }
+    .level-3 .reaction-tagline {
+      background: rgba(255, 42, 85, 0.15);
+      border: 1px solid var(--red-alert);
+      color: var(--red-alert);
+    }
+    .level-neutral .reaction-tagline {
+      background: rgba(176, 38, 255, 0.15);
+      border: 1px solid var(--violet);
+      color: var(--violet);
+    }
+
+    .reaction-shout {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .bouncing-text {
+      display: inline-block;
+      animation: bounceText 0.8s infinite alternate ease-in-out;
+    }
+
+    @keyframes bounceText {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    .level-1 .reaction-shout {
+      color: #ffffff;
+      text-shadow: 0 0 25px var(--gold-glow);
+    }
+    .level-2 .reaction-shout {
+      color: #ffffff;
+      text-shadow: 0 0 25px var(--cyan-glow);
+    }
+    .level-3 .reaction-shout {
+      color: #ffffff;
+      text-shadow: 0 0 25px var(--red-glow);
+    }
+
+    .reaction-subtitle-badge {
+      font-family: var(--font-tech);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan-glow);
+      text-transform: uppercase;
+    }
+
+    .reaction-description {
+      font-family: var(--font-tech);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-main);
+      max-width: 760px;
+      line-height: 1.45;
+    }
+
+    .reaction-btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .close-banner-btn {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px;
+      transition: var(--transition-smooth);
+    }
+    .close-banner-btn:hover {
+      color: #ffffff;
+      transform: scale(1.2);
+    }
+
+    /* ==========================================================================
+       8. DUAL ANALYZER: PERCENTAGE (LEFT) & CGPA (RIGHT)
+       ========================================================================== */
+    .analyzer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .analyzer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .analyzer-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px 28px;
+      border: 1px solid var(--bg-card-border);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: var(--transition-smooth);
+    }
+
+    .analyzer-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+    }
+
+    .percentage-card {
+      border-color: rgba(0, 243, 255, 0.3);
+    }
+    .percentage-card::before {
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .cgpa-card {
+      border-color: rgba(176, 38, 255, 0.3);
+    }
+    .cgpa-card::before {
+      background: linear-gradient(90deg, transparent, var(--violet), transparent);
+    }
+
+    .card-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-label {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .percentage-card .card-label { color: var(--cyan); }
+    .cgpa-card .card-label { color: var(--violet); }
+
+    .card-status-badge {
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    /* Circular SVG meters */
+    .meter-showcase {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      position: relative;
+    }
+
+    .circle-meter-svg {
+      width: 220px;
+      height: 220px;
+      transform: rotate(-90deg);
+      filter: drop-shadow(0 0 14px rgba(0, 0, 0, 0.7));
+    }
+
+    .meter-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 14;
+    }
+
+    .meter-progress {
+      fill: none;
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: 565.48; /* 2 * PI * 90 */
+      stroke-dashoffset: 565.48;
+      transition: stroke-dashoffset 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.6s ease;
+    }
+
+    .percentage-progress {
+      stroke: url(#cyanMeterGradient);
+      filter: drop-shadow(0 0 10px var(--cyan-glow));
+    }
+
+    .cgpa-progress {
+      stroke: url(#violetMeterGradient);
+      filter: drop-shadow(0 0 10px var(--violet-glow));
+    }
+
+    .meter-readout {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .meter-number {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+    .percentage-number {
+      color: #ffffff;
+      text-shadow: 0 0 20px var(--cyan-glow);
+    }
+
+    .cgpa-number {
+      color: #ffffff;
+      text-shadow: 0 0 20px var(--violet-glow);
+    }
+
+    .meter-unit {
+      font-family: var(--font-tech);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .metrics-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .metric-item {
+      background: rgba(6, 12, 30, 0.6);
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .metric-title {
+      font-family: var(--font-tech);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .metric-value {
+      font-family: var(--font-tech);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 2px;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .metric-value.highlight-cyan { color: var(--cyan); }
+    .metric-value.highlight-gold { color: var(--gold); }
+    .metric-value.highlight-red { color: var(--red-alert); }
+    .metric-value.highlight-violet { color: var(--violet); }
+    .metric-value.highlight-emerald { color: var(--emerald); }
+
+    /* ==========================================================================
+       9. SUBJECT GRADE INPUT CONSOLE
+       ========================================================================== */
+    .input-console-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 26px 30px;
+      border: 1px solid var(--bg-card-border);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .console-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .console-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .console-title-accent {
+      color: var(--cyan);
+    }
+
+    .console-subtext {
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+    }
+
+    .subjects-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .subjects-list-header {
+      display: grid;
+      grid-template-columns: 2.2fr 1.1fr 1.1fr 0.9fr 44px;
+      gap: 12px;
+      padding: 0 14px;
+      font-family: var(--font-tech);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .subjects-list-header {
+        display: none;
+      }
+    }
+
+    .subject-row {
+      display: grid;
+      grid-template-columns: 2.2fr 1.1fr 1.1fr 0.9fr 44px;
+      gap: 12px;
+      align-items: center;
+      background: rgba(7, 14, 34, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      transition: var(--transition-smooth);
+    }
+
+    .subject-row:hover, .subject-row:focus-within {
+      border-color: rgba(0, 243, 255, 0.4);
+      background: rgba(10, 20, 48, 0.85);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .subject-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 14px;
+      }
+      .subject-row .input-subject-name {
+        grid-column: span 2;
+      }
+      .subject-row .subject-score-badge {
+        grid-column: 1;
+      }
+      .subject-row .delete-subject-btn {
+        grid-column: 2;
+        justify-self: end;
+      }
+    }
+
+    /* Cyber Inputs */
+    .cyber-input {
+      width: 100%;
+      background: rgba(3, 8, 22, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #ffffff;
+      font-family: var(--font-tech);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .cyber-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+      background: rgba(4, 12, 32, 0.95);
+    }
+
+    .cyber-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* Strict Validation Error Highlighting (Red input + glow) */
+    .cyber-input.input-error {
+      border-color: var(--red-alert) !important;
+      background: rgba(45, 6, 16, 0.9) !important;
+      box-shadow: 0 0 14px var(--red-glow) !important;
+      color: #ffffff !important;
+    }
+
+    .subject-score-badge {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cyan);
+      background: rgba(0, 243, 255, 0.08);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-radius: 8px;
+      padding: 9px 10px;
+      text-align: center;
+      letter-spacing: 0.8px;
+    }
+
+    .subject-score-badge.badge-error {
+      color: var(--red-alert) !important;
+      border-color: var(--red-alert) !important;
+      background: rgba(255, 42, 85, 0.15) !important;
+    }
+
+    .delete-subject-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 42, 85, 0.1);
+      border: 1px solid rgba(255, 42, 85, 0.25);
+      border-radius: 8px;
+      color: var(--red-alert);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .delete-subject-btn:hover:not(:disabled) {
+      background: rgba(255, 42, 85, 0.25);
+      border-color: var(--red-alert);
+      box-shadow: 0 0 12px var(--red-glow);
+      transform: scale(1.05);
+    }
+
+    .delete-subject-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .add-subject-btn {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(0, 243, 255, 0.08);
+      border: 1px dashed var(--cyan);
+      border-radius: 10px;
+      color: var(--cyan);
+      font-family: var(--font-tech);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .add-subject-btn:hover {
+      background: rgba(0, 243, 255, 0.18);
+      border-style: solid;
+      box-shadow: 0 0 18px var(--cyan-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Separate CGPA Input Bar */
+    .cgpa-input-section {
+      background: rgba(176, 38, 255, 0.08);
+      border: 1px solid rgba(176, 38, 255, 0.35);
+      border-radius: 14px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .cgpa-simple-label {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1.2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cgpa-simple-label .cgpa-label-icon {
+      color: var(--violet);
+      font-size: 1.25rem;
+    }
+
+    .cgpa-simple-label .cgpa-scale-tag {
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--violet);
+      background: rgba(176, 38, 255, 0.15);
+      border: 1px solid rgba(176, 38, 255, 0.4);
+      padding: 2px 10px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+
+    .cgpa-input-wrapper {
+      width: 240px;
+    }
+
+    /* Master Action CTA */
+    .analyze-cta-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0 4px;
+    }
+
+    .analyze-btn {
+      width: 100%;
+      max-width: 580px;
+      padding: 18px 36px;
+      background: linear-gradient(135deg, #00f3ff 0%, #0066ff 45%, #b026ff 100%);
+      border: none;
+      border-radius: 16px;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 35px rgba(0, 102, 255, 0.45), 0 0 25px var(--cyan-glow);
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .analyze-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 50%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      transform: rotate(25deg);
+      animation: sweepSheen 3.5s infinite ease-in-out;
+    }
+
+    @keyframes sweepSheen {
+      0% { left: -60%; }
+      35%, 100% { left: 140%; }
+    }
+
+    .analyze-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 14px 45px rgba(0, 243, 255, 0.6), 0 0 35px var(--violet-glow);
+    }
+
+    .analyze-btn:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    /* ==========================================================================
+       10. ALL STUDENTS SUMMARY REPORT (RECORDS ARCHIVE)
+       ========================================================================== */
+    .summary-report-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px 28px;
+      border: 1px solid rgba(176, 38, 255, 0.3);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .report-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .report-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .report-title-accent {
+      color: var(--violet);
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      font-family: var(--font-tech);
+      font-size: 1rem;
+    }
+
+    .summary-table th {
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .summary-table tbody tr {
+      background: rgba(8, 14, 34, 0.7);
+      transition: var(--transition-smooth);
+    }
+
+    .summary-table tbody tr:hover {
+      background: rgba(14, 24, 55, 0.9);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    }
+
+    .summary-table td {
+      padding: 12px 14px;
+      color: var(--text-main);
+      font-weight: 600;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .summary-table td:first-child {
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px 0 0 8px;
+    }
+
+    .summary-table td:last-child {
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .report-tier-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .report-tier-badge.tier-good {
+      background: rgba(0, 255, 163, 0.15);
+      color: var(--emerald);
+      border: 1px solid var(--emerald);
+    }
+
+    .report-tier-badge.tier-warn {
+      background: rgba(0, 243, 255, 0.15);
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+    }
+
+    .report-tier-badge.tier-low {
+      background: rgba(255, 42, 85, 0.15);
+      color: var(--red-alert);
+      border: 1px solid var(--red-alert);
+    }
+
+    .report-tier-badge.tier-neutral {
+      background: rgba(176, 38, 255, 0.15);
+      color: var(--violet);
+      border: 1px solid var(--violet);
+    }
+
+    .empty-report-hint {
+      text-align: center;
+      padding: 24px 10px;
+      color: var(--text-dim);
+      font-family: var(--font-tech);
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    /* Footer */
+    .cyber-footer {
+      text-align: center;
+      padding: 20px 0 10px;
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      color: var(--text-dim);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cyber-footer strong {
+      color: var(--cyan);
+    }
+
+    /* ==========================================================================
+       SCROLLING REELS SIMULATION MODAL (BELOW 60% REACTION)
+       ========================================================================== */
+    .reels-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(2, 6, 18, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .reels-modal-overlay.active {
+      display: flex;
+      animation: modalFadeIn 0.35s ease-out forwards;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Smartphone Frame */
+    .reels-phone-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 390px;
+      height: 720px;
+      max-height: 92vh;
+      background: #000000;
+      border-radius: 44px;
+      border: 3.5px solid rgba(0, 243, 255, 0.45);
+      box-shadow: 0 0 50px rgba(0, 243, 255, 0.35), 0 25px 80px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Phone Speaker / Dynamic Island */
+    .phone-island-bar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 24px;
+      background: #0f172a;
+      border-radius: 14px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    .phone-lens {
+      width: 10px;
+      height: 10px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 50%;
+    }
+
+    .phone-speaker {
+      width: 40px;
+      height: 4px;
+      background: #334155;
+      border-radius: 2px;
+    }
+
+    /* Phone Top Bar */
+    .reels-phone-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 38px 18px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 40;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+    }
+
+    .reels-title-logo {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reels-title-logo span {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .reels-close-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: var(--transition-smooth);
+    }
+
+    .reels-close-btn:hover {
+      background: var(--red-alert);
+      border-color: var(--red-alert);
+    }
+
+    /* Infinite Scrolling Track Viewport */
+    .reels-viewport {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #050814;
+    }
+
+    .reels-scroll-track {
+      width: 100%;
+      height: 400%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      animation: rapidReelsScroll 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .reels-scroll-track.paused {
+      animation-play-state: paused;
+    }
+
+    /* Fast rapid upward swipe transitions with motion blur */
+    @keyframes rapidReelsScroll {
+      0% { transform: translateY(0%); filter: blur(0px); }
+      20% { transform: translateY(0%); filter: blur(0px); }
+      25% { transform: translateY(-25%); filter: blur(2px); }
+      45% { transform: translateY(-25%); filter: blur(0px); }
+      50% { transform: translateY(-50%); filter: blur(2px); }
+      70% { transform: translateY(-50%); filter: blur(0px); }
+      75% { transform: translateY(-75%); filter: blur(2px); }
+      95% { transform: translateY(-75%); filter: blur(0px); }
+      100% { transform: translateY(-100%); filter: blur(1px); }
+    }
+
+    /* Video Card inside Feed */
+    .reel-card {
+      width: 100%;
+      height: 25%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px 16px 36px;
+      box-sizing: border-box;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Animated gradient backdrops simulating videos */
+    .reel-card-1 {
+      background: linear-gradient(135deg, #1f0036 0%, #4a0040 50%, #15002a 100%);
+    }
+    .reel-card-2 {
+      background: linear-gradient(135deg, #021b3b 0%, #004e75 50%, #031429 100%);
+    }
+    .reel-card-3 {
+      background: linear-gradient(135deg, #2b1100 0%, #6e3000 50%, #1a0800 100%);
+    }
+    .reel-card-4 {
+      background: linear-gradient(135deg, #022b1c 0%, #006341 50%, #001f14 100%);
+    }
+
+    /* Visual Simulated Gameplay & Dancing Memes inside cards */
+    .reel-video-anim {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.7;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reel-meme-avatar {
+      font-size: 5rem;
+      animation: memeDance 0.6s infinite alternate ease-in-out;
+    }
+
+    @keyframes memeDance {
+      0% { transform: scale(1) rotate(-6deg); }
+      100% { transform: scale(1.15) rotate(6deg) translateY(-10px); }
+    }
+
+    .reel-waveforms {
+      position: absolute;
+      bottom: 120px;
+      left: 20px;
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 40px;
+    }
+
+    .wave-bar {
+      width: 4px;
+      background: var(--cyan);
+      border-radius: 2px;
+      animation: waveDance 0.5s infinite alternate ease-in-out;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 32px; background: var(--magenta); }
+    .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 18px; background: var(--gold); }
+    .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 38px; background: var(--emerald); }
+    .wave-bar:nth-child(5) { animation-delay: 0.15s; height: 26px; }
+
+    @keyframes waveDance {
+      0% { height: 8px; }
+      100% { height: 38px; }
+    }
+
+    /* Right Action Bar (Heart, Comments, Share, Music Disc) */
+    .reel-actions-column {
+      position: absolute;
+      right: 14px;
+      bottom: 45px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .action-icon-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #ffffff;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+    }
+
+    .action-icon-btn span {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .heart-like-btn {
+      color: #ff2a55;
+      animation: heartPulse 0.8s infinite alternate ease-in-out;
+    }
+
+    @keyframes heartPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.22); filter: drop-shadow(0 0 10px #ff2a55); }
+    }
+
+    .music-disc-spin {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #333 30%, #111 70%);
+      border: 2px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      animation: discRotate 2.5s linear infinite;
+    }
+
+    @keyframes discRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Bottom Info in Video Card */
+    .reel-info-box {
+      position: relative;
+      z-index: 10;
+      max-width: 82%;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .reel-user-tag {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reel-user-tag .follow-pill {
+      font-size: 0.72rem;
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 1px 8px;
+      border-radius: 4px;
+    }
+
+    .reel-caption {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      color: rgba(255, 255, 255, 0.92);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    .reel-audio-ticker {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.82rem;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Floating Double-Tap Hearts */
+    .floating-reel-heart {
+      position: absolute;
+      color: #ff2a55;
+      font-size: 2.2rem;
+      pointer-events: none;
+      z-index: 30;
+      animation: floatUpHeart 1.2s ease-out forwards;
+    }
+
+    @keyframes floatUpHeart {
+      0% { opacity: 0; transform: scale(0.4) translateY(0); }
+      30% { opacity: 1; transform: scale(1.3) translateY(-30px); }
+      100% { opacity: 0; transform: scale(1.6) translateY(-140px); }
+    }
+
+    /* ==========================================================================
+       FUNNY PAUSE & EMERGENCY WARNING GLITCH OVERLAY
+       ========================================================================== */
+    .reels-freeze-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      background: rgba(180, 0, 30, 0.25);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .reels-freeze-overlay.active {
+      display: flex;
+      animation: glitchSlam 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes glitchSlam {
+      0% { opacity: 0; transform: scale(1.2); }
+      40% { opacity: 1; transform: scale(0.95); filter: contrast(180%); }
+      100% { opacity: 1; transform: scale(1); filter: contrast(100%); }
+    }
+
+    .glitch-scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 42, 85, 0.15) 0px,
+        rgba(255, 42, 85, 0.15) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+    }
+
+    .reels-warning-box {
+      position: relative;
+      z-index: 10;
+      background: rgba(10, 18, 42, 0.94);
+      border: 2px solid var(--red-alert);
+      border-radius: 24px;
+      padding: 24px 18px;
+      box-shadow: 0 0 40px var(--red-glow), inset 0 0 20px rgba(255, 42, 85, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .warning-siren-icon {
+      font-size: 3rem;
+      animation: sirenRotate 0.6s infinite alternate ease-in-out;
+    }
+
+    @keyframes sirenRotate {
+      0% { transform: scale(0.9) rotate(-15deg); }
+      100% { transform: scale(1.2) rotate(15deg); }
+    }
+
+    .reels-alert-tag {
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--red-alert);
+      background: rgba(255, 42, 85, 0.15);
+      border: 1px solid var(--red-alert);
+      padding: 2px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    .reels-main-message {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-shadow: 0 0 16px var(--red-glow);
+    }
+
+    .reels-main-message .highlight-yellow {
+      color: var(--gold);
+      display: block;
+      font-size: 1.45rem;
+      text-shadow: 0 0 18px var(--gold-glow);
+    }
+
+    .reels-voice-shout {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--red-alert);
+      letter-spacing: 1px;
+      animation: pulseAlert 0.7s infinite alternate;
+    }
+
+    @keyframes pulseAlert {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .reels-score-chip {
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cyan);
+      background: rgba(0, 243, 255, 0.1);
+      border: 1px solid var(--cyan);
+      padding: 4px 14px;
+      border-radius: 8px;
+    }
+
+    .reels-roast-text {
+      font-family: var(--font-body);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .reels-warning-btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .btn-study-now {
+      width: 100%;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%);
+      border: none;
+      border-radius: 12px;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.8px;
+      box-shadow: 0 0 20px var(--cyan-glow);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-study-now:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 28px var(--cyan);
+    }
+
+    .btn-replay-reels-voice {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      color: #ffffff;
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-replay-reels-voice:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-resume-scroll {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 4px;
+    }
+
+    .btn-resume-scroll:hover {
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cinematic Background: Human Evolution through Cyber-Future -->
+  <canvas id="evolution-canvas"></canvas>
+  <div class="background-vignette"></div>
+  <div class="cyber-grid-overlay"></div>
+
+  <!-- Foreground FX Canvas: Blooming Flowers, Golden Sparkles, Confetti, Hologram -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- SVG Gradient Definitions for Animated Circular Rings -->
+  <svg width="0" height="0" style="position: absolute; left: -9999px;">
+    <defs>
+      <linearGradient id="cyanMeterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00f3ff" />
+        <stop offset="100%" stop-color="#0066ff" />
+      </linearGradient>
+      <linearGradient id="violetMeterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#b026ff" />
+        <stop offset="100%" stop-color="#ff007f" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Main Single Page Application Wrapper -->
+  <div class="app-wrapper">
+
+    <!-- HEADER / BRANDING -->
+    <header class="cyber-header">
+      <div class="brand-group">
+        <div class="brand-emblem" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8l7 3.5v7.4l-7 3.5-7-3.5V8.3l7-3.5zM12 7a5 5 0 100 10 5 5 0 000-10z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">
+            CODE ALPHA
+            <span class="badge">GRADE TRACKER</span>
+          </h1>
+          <p class="brand-subtitle">FUTURISTIC ACADEMIC MATRIX & MEME SYNTHESIZER</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="hud-btn active" id="audio-toggle-btn" title="Toggle Meme Voice & Audio Synthesis">
+          <span id="audio-icon">🔊</span>
+          <span id="audio-label">SOUND ON</span>
+        </button>
+        <button type="button" class="hud-btn" id="replay-btn" title="Replay Last Meme Spoken Reaction">
+          <span>🎙️</span>
+          <span>REPLAY SOUND</span>
+        </button>
+        <button type="button" class="hud-btn records-btn" id="scroll-report-btn" title="Jump to Summary Report">
+          <span>📑</span>
+          <span>SUMMARY REPORT</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- STRICT VALIDATION ERROR BANNER -->
+    <section class="validation-error-banner" id="val-error-banner" aria-live="assertive">
+      <div class="val-error-content">
+        <div class="val-error-icon">⚠️</div>
+        <div class="val-error-text">
+          <strong id="val-error-title">VALIDATION ERROR DETECTED</strong>
+          <span id="val-error-msg">ERROR: Marks obtained cannot exceed maximum marks!</span>
+        </div>
+      </div>
+      <button type="button" class="val-close-btn" id="val-close-btn" aria-label="Dismiss error">✕</button>
+    </section>
+
+    <!-- PERFORMANCE REACTION / MEME VOICE BANNER -->
+    <section class="reaction-hud-banner" id="reaction-banner" aria-live="polite">
+      <button type="button" class="close-banner-btn" id="close-banner-btn" aria-label="Close Reaction">✕</button>
+      <div class="reaction-content">
+        <span class="reaction-tagline" id="reaction-tagline">PERFORMANCE LEVEL</span>
+        <h2 class="reaction-shout" id="reaction-shout">REACTION TEXT</h2>
+        <div class="reaction-subtitle-badge" id="reaction-subtitle-badge"></div>
+        <p class="reaction-description" id="reaction-description">Detailed performance evaluation</p>
+        <div class="reaction-btn-row">
+          <button type="button" class="hud-btn" id="banner-replay-btn">
+            <span>🎙️</span> <span>REPLAY MEME VOICE</span>
+          </button>
+          <button type="button" class="hud-btn" id="banner-reels-btn" style="display: none; border-color: var(--red-alert);">
+            <span>📱</span> <span>VIEW SCROLLING REELS WARNING</span>
+          </button>
+          <button type="button" class="hud-btn" id="banner-dismiss-flowers-btn" style="display: none; border-color: var(--gold); color: var(--gold);">
+            <span>✨</span> <span>DISMISS FLOWERS</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DUAL ANALYZER: PERCENTAGE (LEFT) & CGPA (RIGHT) -->
+    <section class="analyzer-grid" aria-label="Performance Matrix">
+      
+      <!-- LEFT: PERCENTAGE ANALYZER -->
+      <article class="analyzer-card percentage-card" id="percentage-panel">
+        <div class="card-header-bar">
+          <span class="card-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="19" y1="5" x2="5" y2="19" />
+              <circle cx="6.5" cy="6.5" r="2.5" />
+              <circle cx="17.5" cy="17.5" r="2.5" />
+            </svg>
+            PERCENTAGE ANALYZER
+          </span>
+          <span class="card-status-badge" id="percentage-status-badge">READY TO ANALYZE</span>
+        </div>
+
+        <div class="meter-showcase">
+          <svg class="circle-meter-svg" viewBox="0 0 200 200">
+            <circle class="meter-track" cx="100" cy="100" r="90" />
+            <circle class="meter-progress percentage-progress" id="percentage-ring" cx="100" cy="100" r="90" />
+          </svg>
+          <div class="meter-readout">
+            <span class="meter-number percentage-number" id="percentage-value-display">0.00%</span>
+            <span class="meter-unit">OVERALL SCORE</span>
+          </div>
+        </div>
+
+        <div class="metrics-stats-grid">
+          <div class="metric-item">
+            <span class="metric-title">TOTAL MARKS</span>
+            <span class="metric-value highlight-cyan" id="total-marks-display">0 / 0</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-title">AVG SUBJECT %</span>
+            <span class="metric-value highlight-cyan" id="avg-subject-display">0.00%</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-title">HIGHEST SUBJECT</span>
+            <span class="metric-value highlight-emerald" id="highest-subject-display">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-title">LOWEST SUBJECT</span>
+            <span class="metric-value highlight-red" id="lowest-subject-display">—</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- RIGHT: CGPA ANALYZER -->
+      <article class="analyzer-card cgpa-card" id="cgpa-panel">
+        <div class="card-header-bar">
+          <span class="card-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            CGPA ANALYZER
+          </span>
+          <span class="card-status-badge" id="cgpa-status-badge">0.00 – 10.00 SCALE</span>
+        </div>
+
+        <div class="meter-showcase">
+          <svg class="circle-meter-svg" viewBox="0 0 200 200">
+            <circle class="meter-track" cx="100" cy="100" r="90" />
+            <circle class="meter-progress cgpa-progress" id="cgpa-ring" cx="100" cy="100" r="90" />
+          </svg>
+          <div class="meter-readout">
+            <span class="meter-number cgpa-number" id="cgpa-value-display">0.00</span>
+            <span class="meter-unit">10.00 SCALE</span>
+          </div>
+        </div>
+
+        <div class="metrics-stats-grid">
+          <div class="metric-item">
+            <span class="metric-title">CGPA STATUS</span>
+            <span class="metric-value highlight-violet" id="cgpa-state-display">NOT ENTERED</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-title">ACADEMIC TIER</span>
+            <span class="metric-value highlight-violet" id="cgpa-tier-display">—</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-title">MAX POSSIBLE</span>
+            <span class="metric-value" id="cgpa-max-display">10.00</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-title">HONORS STATUS</span>
+            <span class="metric-value highlight-gold" id="cgpa-honors-display">—</span>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- SUBJECT GRADE ENTRY CONSOLE -->
+    <section class="input-console-card">
+      <div class="console-header-row">
+        <div>
+          <h2 class="console-title">
+            <span class="console-title-accent">⚡</span> SUBJECT PERFORMANCE ENTRIES
+          </h2>
+          <p class="console-subtext">Add or remove subjects dynamically. Strict validation enforced across all fields.</p>
+        </div>
+      </div>
+
+      <!-- Table Header -->
+      <div class="subjects-list-header">
+        <span>Subject Name</span>
+        <span>Marks Obtained</span>
+        <span>Maximum Marks</span>
+        <span>Subject %</span>
+        <span>Del</span>
+      </div>
+
+      <!-- Dynamic Subjects Container -->
+      <div class="subjects-list-container" id="subjects-container">
+        <!-- Injected dynamically via JavaScript -->
+      </div>
+
+      <!-- Add Subject Button -->
+      <button type="button" class="add-subject-btn" id="add-subject-btn">
+        <span>+</span> ADD ANOTHER SUBJECT
+      </button>
+
+      <!-- Separate CGPA Entry Input -->
+      <div class="cgpa-input-section">
+        <label for="cgpa-input" class="cgpa-simple-label">
+          <span class="cgpa-label-icon">🎯</span> CGPA
+          <span class="cgpa-scale-tag">0.00 – 10.00 SCALE</span>
+        </label>
+        <div class="cgpa-input-wrapper">
+          <input
+            type="number"
+            id="cgpa-input"
+            class="cyber-input"
+            placeholder="Enter CGPA (e.g. 8.75)"
+            min="0"
+            max="10"
+            step="0.01"
+            aria-label="Enter CGPA on a scale of 0 to 10"
+          />
+        </div>
+      </div>
+
+      <!-- Master Action CTA Button -->
+      <div class="analyze-cta-container">
+        <button type="button" class="analyze-btn" id="analyze-btn">
+          <span>⚡</span> ANALYZE MY PERFORMANCE <span>⚡</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- SUMMARY REPORT OF ALL STUDENTS -->
+    <section class="summary-report-card" id="summary-report-section">
+      <div class="report-header-row">
+        <div>
+          <h2 class="report-title">
+            <span class="report-title-accent">📑</span> ALL STUDENTS SUMMARY REPORT
+          </h2>
+          <p class="console-subtext">Cumulative archive of all analyzed student records stored in arrays.</p>
+        </div>
+        <button type="button" class="hud-btn" id="clear-records-btn" style="border-color: rgba(255,255,255,0.2);">
+          <span>🗑️</span> CLEAR ARCHIVE
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Record #</th>
+              <th>Total Marks</th>
+              <th>Overall %</th>
+              <th>Avg Subject %</th>
+              <th>Highest Subject</th>
+              <th>Lowest Subject</th>
+              <th>CGPA</th>
+              <th>Status / Tier</th>
+            </tr>
+          </thead>
+          <tbody id="summary-table-body">
+            <!-- Dynamically populated from studentRecords array -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="cyber-footer">
+      <p><strong>CODE ALPHA</strong> • FUTURISTIC STUDENT GRADE TRACKER • ZERO DEPENDENCIES • 100% CLIENT-SIDE</p>
+      <p>Strict Input Validation • Memory Array Storage • Browser Speech Synthesis</p>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       SCROLLING REELS DISTRACTION SIMULATION MODAL
+       ========================================================================== -->
+  <div class="reels-modal-overlay" id="reels-modal" role="dialog" aria-modal="true" aria-label="Reels Distraction Simulator">
+    <div class="reels-phone-wrapper">
+      
+      <!-- Top Speaker / Dynamic Island -->
+      <div class="phone-island-bar">
+        <div class="phone-lens"></div>
+        <div class="phone-speaker"></div>
+      </div>
+
+      <!-- Top Header -->
+      <div class="reels-phone-header">
+        <div class="reels-title-logo">
+          <span>Reels</span> ▾
+        </div>
+        <button type="button" class="reels-close-btn" id="reels-close-x-btn" aria-label="Close Reels">✕</button>
+      </div>
+
+      <!-- Viewport with Infinite Vertical Scrolling Feed -->
+      <div class="reels-viewport" id="reels-viewport">
+        <div class="reels-scroll-track" id="reels-scroll-track">
+          
+          <!-- Card 1: Brainrot dancing meme -->
+          <article class="reel-card reel-card-1">
+            <div class="reel-video-anim">
+              <div class="reel-meme-avatar">😼</div>
+              <div class="reel-waveforms">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+              </div>
+            </div>
+            <div class="reel-actions-column">
+              <button type="button" class="action-icon-btn heart-like-btn">
+                <span>❤️</span> <span class="like-num">2.4M</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>💬</span> <span>48.2K</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>↗️</span> <span>129K</span>
+              </button>
+              <div class="music-disc-spin">💿</div>
+            </div>
+            <div class="reel-info-box">
+              <div class="reel-user-tag">
+                @brainrot.infinite <span class="follow-pill">Follow</span>
+              </div>
+              <p class="reel-caption">POV: 3 AM before the big exam and this dancing cat won't leave your mind 😭💀 #viral #procrastination</p>
+              <div class="reel-audio-ticker">
+                <span>🎵</span> <span>Phonk Cat Remix (Audio Viral) ♫</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2: ASMR Soap Cutting -->
+          <article class="reel-card reel-card-2">
+            <div class="reel-video-anim">
+              <div class="reel-meme-avatar">🧼</div>
+              <div class="reel-waveforms">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+              </div>
+            </div>
+            <div class="reel-actions-column">
+              <button type="button" class="action-icon-btn heart-like-btn">
+                <span>❤️</span> <span class="like-num">895K</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>💬</span> <span>19.4K</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>↗️</span> <span>54K</span>
+              </button>
+              <div class="music-disc-spin">💿</div>
+            </div>
+            <div class="reel-info-box">
+              <div class="reel-user-tag">
+                @soap_satisfaction <span class="follow-pill">Follow</span>
+              </div>
+              <p class="reel-caption">Infinite rainbow kinetic cubes slicing in ultra HD 4K ASMR... You cannot look away! 🌈✨</p>
+              <div class="reel-audio-ticker">
+                <span>🎵</span> <span>Crunchy ASMR Sounds ♫</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3: Subway Surfers + Parkour -->
+          <article class="reel-card reel-card-3">
+            <div class="reel-video-anim">
+              <div class="reel-meme-avatar">🏃‍♂️</div>
+              <div class="reel-waveforms">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+              </div>
+            </div>
+            <div class="reel-actions-column">
+              <button type="button" class="action-icon-btn heart-like-btn">
+                <span>❤️</span> <span class="like-num">3.8M</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>💬</span> <span>96.3K</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>↗️</span> <span>410K</span>
+              </button>
+              <div class="music-disc-spin">💿</div>
+            </div>
+            <div class="reel-info-box">
+              <div class="reel-user-tag">
+                @multitask_parkour <span class="follow-pill">Follow</span>
+              </div>
+              <p class="reel-caption">Subway Surfers + Minecraft speedrun parkour at 2X speed! Fast swiping forever ⚡🔥</p>
+              <div class="reel-audio-ticker">
+                <span>🎵</span> <span>GigaChad Phonk Speedrun ♫</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 4: Procrastination meme -->
+          <article class="reel-card reel-card-4">
+            <div class="reel-video-anim">
+              <div class="reel-meme-avatar">⏰</div>
+              <div class="reel-waveforms">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+              </div>
+            </div>
+            <div class="reel-actions-column">
+              <button type="button" class="action-icon-btn heart-like-btn">
+                <span>❤️</span> <span class="like-num">1.9M</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>💬</span> <span>52.1K</span>
+              </button>
+              <button type="button" class="action-icon-btn">
+                <span>↗️</span> <span>160K</span>
+              </button>
+              <div class="music-disc-spin">💿</div>
+            </div>
+            <div class="reel-info-box">
+              <div class="reel-user-tag">
+                @student_procrastinator <span class="follow-pill">Follow</span>
+              </div>
+              <p class="reel-caption">"I'll just watch one reel and start studying..." 4 hours later: 👁️👄👁️</p>
+              <div class="reel-audio-ticker">
+                <span>🎵</span> <span>Emotional Damage Official Sound ♫</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Emergency Glitch Pause & Warning Stamp Overlay -->
+        <div class="reels-freeze-overlay" id="reels-freeze-overlay">
+          <div class="glitch-scanlines"></div>
+          <div class="reels-warning-box">
+            <div class="warning-siren-icon">🚨</div>
+            <span class="reels-alert-tag">DISTRACTION INTERCEPTED</span>
+            <h3 class="reels-main-message">
+              STOP SCROLLING REELS.
+              <span class="highlight-yellow">START ACHIEVING GOALS!</span>
+            </h3>
+            <div class="reels-voice-shout">“DO NOT SCROLL REELLLLLLS!”</div>
+            <div class="reels-score-chip" id="modal-score-readout">SCORE: 0.00% (BELOW 60%)</div>
+            <p class="reels-roast-text">
+              Algorithms are consuming your study time! Close short-form videos, open your textbooks, and start achieving your academic goals right now!
+            </p>
+            <div class="reels-warning-btn-stack">
+              <button type="button" class="btn-study-now" id="reels-study-now-btn">
+                📚 CLOSE REELS & STUDY NOW
+              </button>
+              <button type="button" class="btn-replay-reels-voice" id="reels-replay-voice-btn">
+                🎙️ REPLAY "DO NOT SCROLL REELS"
+              </button>
+              <button type="button" class="btn-resume-scroll" id="reels-resume-scroll-btn">
+                🔁 Resume scrolling simulation (for fun)
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       11. COMPLETE JAVASCRIPT: ARRAYS, STRICT VALIDATION, SOUNDS & ANIMATIONS
+       ========================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ------------------------------------------------------------------------
+         A. DATA STRUCTURES & STATE (ARRAYS / ARRAYLIST PATTERN)
+         ------------------------------------------------------------------------ */
+      // Primary array storing the current student's subjects
+      let subjects = [
+        { id: 1, name: 'Quantum Computing & Algorithms', marks: 88, max: 100 },
+        { id: 2, name: 'Neural Networks & Deep Learning', marks: 92, max: 100 },
+        { id: 3, name: 'Distributed Systems & Cloud', marks: 82, max: 100 }
+      ];
+
+      // Array storing historical summary records for all evaluated students
+      let studentRecords = [];
+
+      let nextSubjectId = 4;
+      let nextStudentNum = 1;
+      let soundEnabled = true;
+      let lastReaction = null;
+
+      const CIRCLE_CIRCUMFERENCE = 565.486; // 2 * PI * 90
+
+      /* ------------------------------------------------------------------------
+         B. DOM ELEMENTS
+         ------------------------------------------------------------------------ */
+      const subjectsContainer = document.getElementById('subjects-container');
+      const addSubjectBtn = document.getElementById('add-subject-btn');
+      const cgpaInput = document.getElementById('cgpa-input');
+      const analyzeBtn = document.getElementById('analyze-btn');
+
+      const valErrorBanner = document.getElementById('val-error-banner');
+      const valErrorTitle = document.getElementById('val-error-title');
+      const valErrorMsg = document.getElementById('val-error-msg');
+      const valCloseBtn = document.getElementById('val-close-btn');
+
+      const percentageRing = document.getElementById('percentage-ring');
+      const percentageValueDisplay = document.getElementById('percentage-value-display');
+      const percentageStatusBadge = document.getElementById('percentage-status-badge');
+      const totalMarksDisplay = document.getElementById('total-marks-display');
+      const avgSubjectDisplay = document.getElementById('avg-subject-display');
+      const highestSubjectDisplay = document.getElementById('highest-subject-display');
+      const lowestSubjectDisplay = document.getElementById('lowest-subject-display');
+
+      const cgpaRing = document.getElementById('cgpa-ring');
+      const cgpaValueDisplay = document.getElementById('cgpa-value-display');
+      const cgpaStatusBadge = document.getElementById('cgpa-status-badge');
+      const cgpaStateDisplay = document.getElementById('cgpa-state-display');
+      const cgpaTierDisplay = document.getElementById('cgpa-tier-display');
+      const cgpaHonorsDisplay = document.getElementById('cgpa-honors-display');
+
+      const audioToggleBtn = document.getElementById('audio-toggle-btn');
+      const audioIcon = document.getElementById('audio-icon');
+      const audioLabel = document.getElementById('audio-label');
+      const replayBtn = document.getElementById('replay-btn');
+      const scrollReportBtn = document.getElementById('scroll-report-btn');
+
+      const reactionBanner = document.getElementById('reaction-banner');
+      const closeBannerBtn = document.getElementById('close-banner-btn');
+      const reactionTagline = document.getElementById('reaction-tagline');
+      const reactionShout = document.getElementById('reaction-shout');
+      const reactionSubtitleBadge = document.getElementById('reaction-subtitle-badge');
+      const reactionDescription = document.getElementById('reaction-description');
+      const bannerReplayBtn = document.getElementById('banner-replay-btn');
+      const bannerReelsBtn = document.getElementById('banner-reels-btn');
+      const bannerDismissFlowersBtn = document.getElementById('banner-dismiss-flowers-btn');
+
+      const reelsModal = document.getElementById('reels-modal');
+      const reelsCloseXBtn = document.getElementById('reels-close-x-btn');
+      const reelsScrollTrack = document.getElementById('reels-scroll-track');
+      const reelsFreezeOverlay = document.getElementById('reels-freeze-overlay');
+      const modalScoreReadout = document.getElementById('modal-score-readout');
+      const reelsStudyNowBtn = document.getElementById('reels-study-now-btn');
+      const reelsReplayVoiceBtn = document.getElementById('reels-replay-voice-btn');
+      const reelsResumeScrollBtn = document.getElementById('reels-resume-scroll-btn');
+
+      const summaryTableBody = document.getElementById('summary-table-body');
+      const clearRecordsBtn = document.getElementById('clear-records-btn');
+      const summaryReportSection = document.getElementById('summary-report-section');
+
+      const evolutionCanvas = document.getElementById('evolution-canvas');
+      const fxCanvas = document.getElementById('fx-canvas');
+
+      /* ------------------------------------------------------------------------
+         C. STRICT VALIDATION SYSTEM
+         "MOST IMPORTANT: If even ONE subject contains invalid data, STOP the 
+         entire analysis. Do not calculate percentage, update performance results, 
+         play meme sounds, show flowers, or trigger celebrations."
+         ------------------------------------------------------------------------ */
+      function clearAllInputErrors() {
+        const inputs = subjectsContainer.querySelectorAll('.cyber-input');
+        inputs.forEach(inp => inp.classList.remove('input-error'));
+        cgpaInput.classList.remove('input-error');
+        valErrorBanner.style.display = 'none';
+      }
+
+      function validateAllInputs() {
+        clearAllInputErrors();
+
+        if (!Array.isArray(subjects) || subjects.length === 0) {
+          return {
+            isValid: false,
+            errorMessage: 'ERROR: You must add at least one subject to analyze!',
+            errorField: null
+          };
+        }
+
+        // Validate each subject in the array
+        for (let i = 0; i < subjects.length; i++) {
+          const sub = subjects[i];
+          const rowElement = subjectsContainer.querySelector(`.subject-row[data-id="${sub.id}"]`);
+          const nameInput = rowElement ? rowElement.querySelector('.input-subject-name') : null;
+          const marksInput = rowElement ? rowElement.querySelector('.input-obtained-marks') : null;
+          const maxInput = rowElement ? rowElement.querySelector('.input-max-marks') : null;
+
+          // 1. Subject Name cannot be empty
+          if (!sub.name || sub.name.trim() === '') {
+            if (nameInput) nameInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Subject #${i + 1} name cannot be empty!`,
+              errorElement: nameInput
+            };
+          }
+
+          // 2. Reject empty numerical inputs
+          if (sub.marks === '' || sub.marks === null || sub.marks === undefined) {
+            if (marksInput) marksInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Marks obtained for "${sub.name}" cannot be empty!`,
+              errorElement: marksInput
+            };
+          }
+
+          if (sub.max === '' || sub.max === null || sub.max === undefined) {
+            if (maxInput) maxInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Maximum marks for "${sub.name}" cannot be empty!`,
+              errorElement: maxInput
+            };
+          }
+
+          const obtainedNum = Number(sub.marks);
+          const maxNum = Number(sub.max);
+
+          // 3. Reject invalid non-numerical values
+          if (isNaN(obtainedNum)) {
+            if (marksInput) marksInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Invalid marks entered for "${sub.name}"! Must be a valid number.`,
+              errorElement: marksInput
+            };
+          }
+
+          if (isNaN(maxNum)) {
+            if (maxInput) maxInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Invalid maximum marks entered for "${sub.name}"! Must be a valid number.`,
+              errorElement: maxInput
+            };
+          }
+
+          // 4. Marks obtained must be >= 0
+          if (obtainedNum < 0) {
+            if (marksInput) marksInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Marks obtained for "${sub.name}" cannot be negative (${obtainedNum})!`,
+              errorElement: marksInput
+            };
+          }
+
+          // 5. Maximum marks must be > 0
+          if (maxNum <= 0) {
+            if (maxInput) maxInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Maximum marks for "${sub.name}" must be greater than 0!`,
+              errorElement: maxInput
+            };
+          }
+
+          // 6. Marks obtained must NEVER exceed maximum marks
+          if (obtainedNum > maxNum) {
+            if (marksInput) marksInput.classList.add('input-error');
+            if (maxInput) maxInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: Marks obtained cannot exceed maximum marks! ("${sub.name}": ${obtainedNum} > ${maxNum})`,
+              errorElement: marksInput
+            };
+          }
+        }
+
+        // 7. Validate CGPA if entered (optional, but 0 to 10 if provided)
+        const cgpaRaw = cgpaInput.value.trim();
+        let parsedCgpa = null;
+
+        if (cgpaRaw !== '') {
+          const num = parseFloat(cgpaRaw);
+          if (isNaN(num) || num < 0 || num > 10) {
+            cgpaInput.classList.add('input-error');
+            return {
+              isValid: false,
+              errorMessage: `ERROR: CGPA must be between 0.00 and 10.00! (Entered: "${cgpaRaw}")`,
+              errorElement: cgpaInput
+            };
+          }
+          parsedCgpa = num;
+        }
+
+        return {
+          isValid: true,
+          cgpa: parsedCgpa
+        };
+      }
+
+      function displayValidationError(msg, targetElem) {
+        // Stop any pending speech or effects
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        reactionBanner.style.display = 'none';
+
+        valErrorTitle.textContent = 'STRICT VALIDATION ERROR';
+        valErrorMsg.textContent = msg;
+        valErrorBanner.style.display = 'flex';
+        valErrorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        if (targetElem && typeof targetElem.focus === 'function') {
+          targetElem.focus();
+        }
+      }
+
+      valCloseBtn.addEventListener('click', () => {
+        valErrorBanner.style.display = 'none';
+      });
+
+      /* ------------------------------------------------------------------------
+         D. CALCULATIONS ENGINE (USING ARRAYS)
+         Percentage calculated strictly from subject marks only (zero CGPA)
+         ------------------------------------------------------------------------ */
+      function calculatePercentageMetrics() {
+        let totalObtained = 0;
+        let totalMax = 0;
+        let sumPercentages = 0;
+
+        let highestSub = null;
+        let highestSubPct = -1;
+        let lowestSub = null;
+        let lowestSubPct = 101;
+
+        subjects.forEach(sub => {
+          const obtained = Number(sub.marks);
+          const max = Number(sub.max);
+
+          totalObtained += obtained;
+          totalMax += max;
+
+          const pct = (obtained / max) * 100;
+          sumPercentages += pct;
+
+          const name = sub.name.trim();
+
+          if (pct > highestSubPct) {
+            highestSubPct = pct;
+            highestSub = { name: name, pct: pct, obtained: obtained, max: max };
+          }
+
+          if (pct < lowestSubPct) {
+            lowestSubPct = pct;
+            lowestSub = { name: name, pct: pct, obtained: obtained, max: max };
+          }
+        });
+
+        const overallPercentage = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
+        const avgSubjectPercentage = subjects.length > 0 ? (sumPercentages / subjects.length) : 0;
+
+        return {
+          totalObtained,
+          totalMax,
+          overallPercentage,
+          avgSubjectPercentage,
+          highestSub,
+          lowestSub
+        };
+      }
+
+      // Update LEFT Percentage Analyzer Panel (Percentage only)
+      function updatePercentageDisplay(pctMetrics) {
+        const pct = pctMetrics.overallPercentage;
+
+        percentageValueDisplay.textContent = `${pct.toFixed(2)}%`;
+        totalMarksDisplay.textContent = `${pctMetrics.totalObtained} / ${pctMetrics.totalMax}`;
+        avgSubjectDisplay.textContent = `${pctMetrics.avgSubjectPercentage.toFixed(2)}%`;
+
+        if (pctMetrics.highestSub) {
+          highestSubjectDisplay.textContent = `${pctMetrics.highestSub.name} (${pctMetrics.highestSub.pct.toFixed(1)}%)`;
+        } else {
+          highestSubjectDisplay.textContent = '—';
+        }
+
+        if (pctMetrics.lowestSub) {
+          lowestSubjectDisplay.textContent = `${pctMetrics.lowestSub.name} (${pctMetrics.lowestSub.pct.toFixed(1)}%)`;
+        } else {
+          lowestSubjectDisplay.textContent = '—';
+        }
+
+        const pctClamped = Math.min(Math.max(pct, 0), 100);
+        const pctOffset = CIRCLE_CIRCUMFERENCE - (CIRCLE_CIRCUMFERENCE * pctClamped) / 100;
+        percentageRing.style.strokeDashoffset = pctOffset;
+
+        if (pct > 60) {
+          percentageStatusBadge.textContent = 'ABOVE 60%';
+          percentageStatusBadge.style.color = 'var(--emerald)';
+        } else if (pct === 60) {
+          percentageStatusBadge.textContent = 'EXACTLY 60%';
+          percentageStatusBadge.style.color = 'var(--cyan)';
+        } else {
+          percentageStatusBadge.textContent = 'BELOW 60%';
+          percentageStatusBadge.style.color = 'var(--red-alert)';
+        }
+      }
+
+      // Update RIGHT CGPA Analyzer Panel (CGPA only, completely independent)
+      function updateCgpaDisplay(cgpaVal) {
+        if (cgpaVal !== null && cgpaVal !== undefined && !isNaN(cgpaVal)) {
+          cgpaValueDisplay.textContent = cgpaVal.toFixed(2);
+          const cgpaClamped = Math.min(Math.max(cgpaVal, 0), 10);
+          const cgpaOffset = CIRCLE_CIRCUMFERENCE - (CIRCLE_CIRCUMFERENCE * cgpaClamped) / 10;
+          cgpaRing.style.strokeDashoffset = cgpaOffset;
+
+          if (cgpaVal > 6.0) {
+            cgpaStatusBadge.textContent = 'ABOVE 6.0';
+            cgpaStatusBadge.style.color = 'var(--emerald)';
+          } else {
+            cgpaStatusBadge.textContent = '6.0 OR BELOW';
+            cgpaStatusBadge.style.color = 'var(--gold)';
+          }
+          cgpaStateDisplay.textContent = 'VERIFIED';
+
+          if (cgpaVal >= 8.5) {
+            cgpaTierDisplay.textContent = 'TIER 1 (DISTINCTION)';
+            cgpaHonorsDisplay.textContent = 'SUMMA CUM LAUDE';
+          } else if (cgpaVal >= 7.0) {
+            cgpaTierDisplay.textContent = 'TIER 2 (FIRST CLASS)';
+            cgpaHonorsDisplay.textContent = 'HONORS ELIGIBLE';
+          } else if (cgpaVal >= 6.0) {
+            cgpaTierDisplay.textContent = 'TIER 3 (SECOND CLASS)';
+            cgpaHonorsDisplay.textContent = 'STANDARD';
+          } else {
+            cgpaTierDisplay.textContent = 'TIER 4 (CRITICAL)';
+            cgpaHonorsDisplay.textContent = 'NEEDS SUPPORT';
+          }
+        } else {
+          cgpaValueDisplay.textContent = '0.00';
+          cgpaRing.style.strokeDashoffset = CIRCLE_CIRCUMFERENCE;
+          cgpaStatusBadge.textContent = 'NOT ENTERED';
+          cgpaStatusBadge.style.color = 'var(--text-muted)';
+          cgpaStateDisplay.textContent = 'NOT ENTERED';
+          cgpaTierDisplay.textContent = '—';
+          cgpaHonorsDisplay.textContent = '—';
+        }
+      }
+
+      /* ------------------------------------------------------------------------
+         E. SUMMARY REPORT TABLE MANAGEMENT (ARRAYLIST PATTERN)
+         ------------------------------------------------------------------------ */
+      function addStudentRecord(pctMetrics, cgpaVal, reaction) {
+        const record = {
+          studentId: nextStudentNum++,
+          totalMarks: `${pctMetrics.totalObtained} / ${pctMetrics.totalMax}`,
+          overallPct: `${pctMetrics.overallPercentage.toFixed(2)}%`,
+          avgSubjectPct: `${pctMetrics.avgSubjectPercentage.toFixed(2)}%`,
+          highestSub: pctMetrics.highestSub ? `${pctMetrics.highestSub.name} (${pctMetrics.highestSub.pct.toFixed(0)}%)` : '—',
+          lowestSub: pctMetrics.lowestSub ? `${pctMetrics.lowestSub.name} (${pctMetrics.lowestSub.pct.toFixed(0)}%)` : '—',
+          cgpa: (cgpaVal !== null && cgpaVal !== undefined && !isNaN(cgpaVal)) ? cgpaVal.toFixed(2) : 'N/A',
+          tier: reaction ? reaction.shortTag : 'Analyzed',
+          levelClass: reaction ? reaction.levelClass : 'tier-neutral'
+        };
+
+        studentRecords.push(record);
+        renderSummaryReportTable();
+      }
+
+      function renderSummaryReportTable() {
+        summaryTableBody.innerHTML = '';
+
+        if (studentRecords.length === 0) {
+          summaryTableBody.innerHTML = `
+            <tr>
+              <td colspan="8" class="empty-report-hint">
+                No student performance records recorded yet. Click "ANALYZE MY PERFORMANCE" to record student reports into this array archive.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        studentRecords.forEach(rec => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>Student #${rec.studentId}</strong></td>
+            <td>${escapeHtml(rec.totalMarks)}</td>
+            <td><span class="highlight-cyan">${rec.overallPct}</span></td>
+            <td>${rec.avgSubjectPct}</td>
+            <td class="highlight-emerald">${escapeHtml(rec.highestSub)}</td>
+            <td class="highlight-red">${escapeHtml(rec.lowestSub)}</td>
+            <td><strong class="highlight-violet">${rec.cgpa}</strong></td>
+            <td><span class="report-tier-badge ${rec.levelClass}">${rec.tier}</span></td>
+          `;
+          summaryTableBody.appendChild(tr);
+        });
+      }
+
+      clearRecordsBtn.addEventListener('click', () => {
+        studentRecords = [];
+        nextStudentNum = 1;
+        renderSummaryReportTable();
+      });
+
+      scrollReportBtn.addEventListener('click', () => {
+        summaryReportSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      /* ------------------------------------------------------------------------
+         F. RENDERING DYNAMIC SUBJECT INPUTS
+         ------------------------------------------------------------------------ */
+      function renderSubjects() {
+        subjectsContainer.innerHTML = '';
+
+        subjects.forEach((sub) => {
+          const row = document.createElement('div');
+          row.className = 'subject-row';
+          row.dataset.id = sub.id;
+
+          const obtainedNum = parseFloat(sub.marks);
+          const maxNum = parseFloat(sub.max);
+          let scoreText = '—';
+          let hasError = false;
+
+          if (sub.marks !== '' && sub.max !== '') {
+            if (isNaN(obtainedNum) || isNaN(maxNum) || maxNum <= 0 || obtainedNum < 0 || obtainedNum > maxNum) {
+              scoreText = 'ERR';
+              hasError = true;
+            } else {
+              scoreText = `${((obtainedNum / maxNum) * 100).toFixed(1)}%`;
+            }
+          }
+
+          row.innerHTML = `
+            <input 
+              type="text" 
+              class="cyber-input input-subject-name" 
+              placeholder="e.g. Subject Name" 
+              value="${escapeHtml(sub.name)}"
+              aria-label="Subject Name"
+            />
+            <input 
+              type="number" 
+              class="cyber-input input-obtained-marks ${hasError ? 'input-error' : ''}" 
+              placeholder="Marks" 
+              min="0" 
+              value="${sub.marks !== '' ? sub.marks : ''}"
+              aria-label="Marks Obtained"
+            />
+            <input 
+              type="number" 
+              class="cyber-input input-max-marks ${hasError ? 'input-error' : ''}" 
+              placeholder="Max" 
+              min="1" 
+              value="${sub.max !== '' ? sub.max : 100}"
+              aria-label="Maximum Marks"
+            />
+            <div class="subject-score-badge ${hasError ? 'badge-error' : ''}" title="Subject Score">${scoreText}</div>
+            <button 
+              type="button" 
+              class="delete-subject-btn" 
+              title="Delete Subject" 
+              aria-label="Delete Subject"
+              ${subjects.length <= 1 ? 'disabled' : ''}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          `;
+
+          // Live sync back to array
+          const nameInput = row.querySelector('.input-subject-name');
+          const marksInput = row.querySelector('.input-obtained-marks');
+          const maxInput = row.querySelector('.input-max-marks');
+          const delBtn = row.querySelector('.delete-subject-btn');
+
+          nameInput.addEventListener('input', (e) => {
+            sub.name = e.target.value;
+            nameInput.classList.remove('input-error');
+          });
+
+          marksInput.addEventListener('input', (e) => {
+            sub.marks = e.target.value === '' ? '' : e.target.value;
+            marksInput.classList.remove('input-error');
+            refreshRowBadge(row, sub);
+          });
+
+          maxInput.addEventListener('input', (e) => {
+            sub.max = e.target.value === '' ? '' : e.target.value;
+            maxInput.classList.remove('input-error');
+            refreshRowBadge(row, sub);
+          });
+
+          delBtn.addEventListener('click', () => {
+            if (subjects.length > 1) {
+              subjects = subjects.filter(s => s.id !== sub.id);
+              renderSubjects();
+            }
+          });
+
+          subjectsContainer.appendChild(row);
+        });
+      }
+
+      function refreshRowBadge(row, sub) {
+        const badge = row.querySelector('.subject-score-badge');
+        const obtainedNum = parseFloat(sub.marks);
+        const maxNum = parseFloat(sub.max);
+
+        if (sub.marks !== '' && sub.max !== '') {
+          if (isNaN(obtainedNum) || isNaN(maxNum) || maxNum <= 0 || obtainedNum < 0 || obtainedNum > maxNum) {
+            badge.textContent = 'ERR';
+            badge.classList.add('badge-error');
+          } else {
+            badge.textContent = `${((obtainedNum / maxNum) * 100).toFixed(1)}%`;
+            badge.classList.remove('badge-error');
+          }
+        } else {
+          badge.textContent = '—';
+          badge.classList.remove('badge-error');
+        }
+      }
+
+      function escapeHtml(text) {
+        if (!text) return '';
+        return String(text).replace(/[&<>"']/g, m => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[m]));
+      }
+
+      addSubjectBtn.addEventListener('click', () => {
+        subjects.push({
+          id: nextSubjectId++,
+          name: '',
+          marks: '',
+          max: 100
+        });
+        renderSubjects();
+
+        const rows = subjectsContainer.querySelectorAll('.subject-row');
+        const lastRow = rows[rows.length - 1];
+        if (lastRow) {
+          const inp = lastRow.querySelector('.input-subject-name');
+          if (inp) inp.focus();
+        }
+      });
+
+      cgpaInput.addEventListener('input', () => {
+        cgpaInput.classList.remove('input-error');
+      });
+
+      /* ------------------------------------------------------------------------
+         G. MEME SPEECH SYNTHESIS & WEB AUDIO SOUND ENGINE
+         ------------------------------------------------------------------------ */
+      const audioCtx = (typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext))
+        ? new (window.AudioContext || window.webkitAudioContext)()
+        : null;
+
+      function playSciFiChime(type) {
+        if (!soundEnabled || !audioCtx) return;
+        try {
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          const now = audioCtx.currentTime;
+
+          if (type === 'good') {
+            // Victorious ascending fanfare chord
+            [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, now + i * 0.08);
+              gain.gain.setValueAtTime(0, now + i * 0.08);
+              gain.gain.linearRampToValueAtTime(0.22, now + i * 0.08 + 0.04);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.75);
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now + i * 0.08);
+              osc.stop(now + i * 0.08 + 0.85);
+            });
+          } else if (type === 'reels') {
+            // Exaggerated meme boing slide + emergency alarm buzzer
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(280, now);
+            osc.frequency.exponentialRampToValueAtTime(950, now + 0.16);
+            osc.frequency.exponentialRampToValueAtTime(180, now + 0.38);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.5);
+
+            // Warning siren horn blip
+            [260, 220].forEach((freq, i) => {
+              const sirenOsc = audioCtx.createOscillator();
+              const sirenGain = audioCtx.createGain();
+              sirenOsc.type = 'sawtooth';
+              sirenOsc.frequency.setValueAtTime(freq, now + 0.25 + i * 0.14);
+              sirenGain.gain.setValueAtTime(0.2, now + 0.25 + i * 0.14);
+              sirenGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25 + i * 0.14 + 0.3);
+              sirenOsc.connect(sirenGain);
+              sirenGain.connect(audioCtx.destination);
+              sirenOsc.start(now + 0.25 + i * 0.14);
+              sirenOsc.stop(now + 0.25 + i * 0.14 + 0.35);
+            });
+          } else if (type === 'neutral') {
+            // Gentle harmonic synth chime
+            [392.00, 523.25, 659.25].forEach((freq, i) => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, now + i * 0.09);
+              gain.gain.setValueAtTime(0, now + i * 0.09);
+              gain.gain.linearRampToValueAtTime(0.18, now + i * 0.09 + 0.03);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.5);
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now + i * 0.09);
+              osc.stop(now + i * 0.09 + 0.55);
+            });
+          }
+        } catch (e) {
+          console.warn('Audio synthesis issue:', e);
+        }
+      }
+
+      function speakMemeReaction(text, options = {}) {
+        if (!soundEnabled) return;
+        if (!('speechSynthesis' in window)) return;
+
+        // Stop any previous reaction before playing a new one
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = options.rate || 1.0;
+        utterance.pitch = options.pitch || 1.2;
+        utterance.volume = 1.0;
+
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const expressiveVoice = voices.find(v => 
+            v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel') || v.name.includes('Fred'))
+          ) || voices.find(v => v.lang.startsWith('en'));
+          if (expressiveVoice) {
+            utterance.voice = expressiveVoice;
+          }
+        }
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+
+      /* ------------------------------------------------------------------------
+         H. ANALYSIS TRIGGER WITH STRICT VALIDATION & MEME LOGIC
+         ------------------------------------------------------------------------ */
+      function performFullAnalysis() {
+        // Step 1: Run Strict Validation
+        const validation = validateAllInputs();
+
+        // If even ONE field is invalid, STOP entire analysis immediately!
+        if (!validation.isValid) {
+          displayValidationError(validation.errorMessage, validation.errorElement);
+          return;
+        }
+
+        // All inputs are valid: hide error banner
+        valErrorBanner.style.display = 'none';
+
+        // Step 2: Calculate percentage ONLY from subject marks (zero CGPA in percentage calculation)
+        const pctMetrics = calculatePercentageMetrics();
+        const cgpa = validation.cgpa; // CGPA handled completely independently
+
+        // Step 3: Determine Meme Reaction based on exact thresholds
+        /*
+          RULES:
+          1. If percentage is below 60%, show the scrolling Reels reaction regardless of CGPA.
+          2. If percentage is strictly above 60% AND CGPA is strictly above 6.0, show the rose and white lotus celebration.
+          3. If percentage is above 60% but CGPA is 6.0 or below, show a neutral message without either celebration.
+          4. If CGPA is missing, evaluate percentage separately. Show the Reels reaction when percentage is below 60%; otherwise request CGPA before showing the flower celebration.
+          5. Exactly 60% does not qualify for the flower celebration and should display a neutral message.
+          6. Invalid subject marks block all analysis, sounds, and animations until corrected.
+        */
+        const pct = pctMetrics.overallPercentage;
+        let reaction = null;
+
+        // RULE 1: If percentage is below 60%, show the scrolling Reels reaction regardless of CGPA
+        if (pct < 60) {
+          reaction = {
+            levelClass: 'level-2',
+            tagClass: 'tier-warn',
+            shortTag: 'BELOW 60% — DO NOT SCROLL REELS',
+            tagline: 'PERFORMANCE BELOW 60% • DISCIPLINE INTERVENTION',
+            shout: 'DO NOT SCROLL REELLLLLLS!',
+            subtitle: 'STOP SCROLLING REELS. START ACHIEVING GOALS!',
+            desc: `Overall score is ${pct.toFixed(2)}% (Below 60%). Put down the phone, close short videos, and lock into your studies to secure your grades!`,
+            voiceText: 'DO NOT SCROLL REELLLLLLS! Stop scrolling reels! Start achieving goals!',
+            voiceOpts: { pitch: 1.35, rate: 1.05 },
+            soundType: 'reels',
+            fxType: 'reels'
+          };
+        }
+        // RULE 2: Exactly 60% does not qualify for the flower celebration and should display a neutral message
+        else if (pct === 60) {
+          reaction = {
+            levelClass: 'level-neutral',
+            tagClass: 'tier-neutral',
+            shortTag: 'EXACTLY 60.00%',
+            tagline: 'PERFORMANCE EXACTLY 60.00% • ON THE EDGE',
+            shout: 'ALMOST THERE — PUSH JUST ABOVE 60%!',
+            subtitle: 'NEUTRAL STATUS • FLOWER CELEBRATION PENDING',
+            desc: `Your overall score is exactly 60.00%. The Rose & White Lotus celebration requires strictly above 60% and CGPA above 6.0. Push just a little higher!`,
+            voiceText: 'Score is exactly 60%. Push a little higher to unlock the flower celebration.',
+            voiceOpts: { pitch: 1.05, rate: 1.0 },
+            soundType: 'neutral',
+            fxType: 'sparkles'
+          };
+        }
+        // RULE 3: Percentage is strictly above 60% AND CGPA is strictly above 6.0
+        else if (pct > 60 && cgpa !== null && !isNaN(cgpa) && cgpa > 6.0) {
+          reaction = {
+            levelClass: 'level-1',
+            tagClass: 'tier-good',
+            shortTag: 'LEVEL 1 — EXCELLENT',
+            tagline: 'PEAK ACADEMIC EXCELLENCE • ROSE & WHITE LOTUS CELEBRATION',
+            shout: '🌸 GOOOOOOOD! 🌸',
+            subtitle: 'PEAK ACADEMIC EXCELLENCE UNLOCKED!',
+            desc: `Outstanding performance! Percentage is ${pct.toFixed(2)}% (> 60%) and CGPA is ${cgpa.toFixed(2)} (> 6.0). Both the Red Rose and White Lotus are blooming in celebration!`,
+            voiceText: 'GOOOOOOOD! Outstanding performance! Keep up the brilliant work!',
+            voiceOpts: { pitch: 1.4, rate: 0.95 },
+            soundType: 'good',
+            fxType: 'rose-and-lotus'
+          };
+        }
+        // RULE 4: Percentage is above 60% but CGPA is 6.0 or below
+        else if (pct > 60 && cgpa !== null && !isNaN(cgpa) && cgpa <= 6.0) {
+          reaction = {
+            levelClass: 'level-neutral',
+            tagClass: 'tier-neutral',
+            shortTag: 'BOOST CGPA (> 6.0)',
+            tagline: 'PERCENTAGE PASSED • CGPA ELEVATION NEEDED',
+            shout: 'STRONG PERCENTAGE — BOOST YOUR CGPA ABOVE 6.0',
+            subtitle: 'CELEBRATION THRESHOLD PENDING',
+            desc: `Great score at ${pct.toFixed(2)}%! However, your CGPA is ${cgpa.toFixed(2)} (needs to be strictly above 6.0 to unlock the flower celebration). Elevate your semester CGPA to qualify!`,
+            voiceText: 'Good percentage, but boost your CGPA strictly above 6.0 to unlock the flower celebration.',
+            voiceOpts: { pitch: 1.1, rate: 1.0 },
+            soundType: 'neutral',
+            fxType: 'sparkles'
+          };
+        }
+        // RULE 5: Percentage is above 60% but CGPA is missing (null/empty)
+        else if (pct > 60 && (cgpa === null || isNaN(cgpa))) {
+          reaction = {
+            levelClass: 'level-neutral',
+            tagClass: 'tier-neutral',
+            shortTag: 'CGPA REQUIRED',
+            tagline: 'PERCENTAGE RECORDED • ENTER CGPA TO QUALIFY',
+            shout: 'ENTER CGPA TO UNLOCK FLOWER CELEBRATION',
+            subtitle: 'PERCENTAGE > 60% ACHIEVED • CGPA (> 6.0) REQUIRED',
+            desc: `Your overall score is ${pct.toFixed(2)}% (above 60%)! Enter your CGPA (strictly above 6.0 required) in the CGPA field above to qualify for the Red Rose and White Lotus celebration.`,
+            voiceText: 'Percentage recorded above 60%. Please enter your CGPA to check for the flower celebration.',
+            voiceOpts: { pitch: 1.05, rate: 0.98 },
+            soundType: 'neutral',
+            fxType: 'sparkles'
+          };
+        }
+
+        lastReaction = reaction;
+
+        // Step 4: Update UI and Circular Meters (Percentage Left, CGPA Right)
+        updatePercentageDisplay(pctMetrics);
+        updateCgpaDisplay(cgpa);
+
+        // Step 5: Save to Summary Report of all students
+        addStudentRecord(pctMetrics, cgpa, reaction);
+
+        // Step 6: Show Reaction Banner & configure buttons
+        reactionBanner.className = `reaction-hud-banner ${reaction.levelClass}`;
+        reactionTagline.textContent = reaction.tagline;
+        reactionShout.innerHTML = `<span class="bouncing-text">${escapeHtml(reaction.shout)}</span>`;
+        reactionSubtitleBadge.textContent = reaction.subtitle;
+        reactionDescription.textContent = reaction.desc;
+        reactionBanner.style.display = 'block';
+
+        if (reaction.fxType === 'reels') {
+          bannerReelsBtn.style.display = 'inline-flex';
+          bannerDismissFlowersBtn.style.display = 'none';
+        } else if (reaction.fxType === 'rose-and-lotus') {
+          bannerDismissFlowersBtn.style.display = 'inline-flex';
+          bannerReelsBtn.style.display = 'none';
+        } else {
+          bannerReelsBtn.style.display = 'none';
+          bannerDismissFlowersBtn.style.display = 'none';
+        }
+
+        reactionBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Step 7: Play Sounds & Visual Animations
+        playSciFiChime(reaction.soundType);
+        speakMemeReaction(reaction.voiceText, reaction.voiceOpts);
+
+        if (reaction.fxType === 'rose-and-lotus') {
+          triggerFlowerBloomFX();
+        } else if (reaction.fxType === 'reels') {
+          triggerReelsAnimation(pct);
+        } else {
+          dismissFlowerCelebration();
+          triggerGoldenSparklesFX();
+        }
+      }
+
+      analyzeBtn.addEventListener('click', () => {
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        performFullAnalysis();
+      });
+
+      closeBannerBtn.addEventListener('click', () => {
+        reactionBanner.style.display = 'none';
+      });
+
+      function replayCurrentReaction() {
+        if (!lastReaction) {
+          performFullAnalysis();
+          return;
+        }
+        playSciFiChime(lastReaction.soundType);
+        speakMemeReaction(lastReaction.voiceText, lastReaction.voiceOpts);
+        if (lastReaction.fxType === 'reels') {
+          triggerReelsAnimation(parseFloat(percentageValueDisplay.textContent) || 0);
+        } else if (lastReaction.fxType === 'rose-and-lotus') {
+          triggerFlowerBloomFX();
+        }
+      }
+
+      replayBtn.addEventListener('click', replayCurrentReaction);
+      bannerReplayBtn.addEventListener('click', replayCurrentReaction);
+
+      bannerReelsBtn.addEventListener('click', () => {
+        const pct = parseFloat(percentageValueDisplay.textContent) || 0;
+        triggerReelsAnimation(pct);
+      });
+
+      bannerDismissFlowersBtn.addEventListener('click', () => {
+        dismissFlowerCelebration();
+      });
+
+      audioToggleBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+          audioToggleBtn.className = 'hud-btn active';
+          audioIcon.textContent = '🔊';
+          audioLabel.textContent = 'SOUND ON';
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+        } else {
+          audioToggleBtn.className = 'hud-btn muted';
+          audioIcon.textContent = '🔇';
+          audioLabel.textContent = 'MUTED';
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+          }
+        }
+      });
+
+      /* ------------------------------------------------------------------------
+         I. SCROLLING REELS DISTRACTION SIMULATION ENGINE (BELOW 60%)
+         ------------------------------------------------------------------------ */
+      let reelsScrollTimer = null;
+      let reelsHeartInterval = null;
+
+      function triggerReelsAnimation(pct) {
+        if (!reelsModal) return;
+        modalScoreReadout.textContent = `SCORE: ${pct.toFixed(2)}% (BELOW 60% CRITICAL ZONE)`;
+
+        // Reset scroll and freeze state
+        reelsScrollTrack.classList.remove('paused');
+        reelsFreezeOverlay.classList.remove('active');
+        reelsModal.classList.add('active');
+
+        // Spawn periodic floating double-tap hearts
+        if (reelsHeartInterval) clearInterval(reelsHeartInterval);
+        reelsHeartInterval = setInterval(() => {
+          if (!reelsModal.classList.contains('active')) {
+            clearInterval(reelsHeartInterval);
+            return;
+          }
+          spawnFloatingHeart();
+        }, 380);
+
+        // Emergency Funny Pause Effect at 2.4 seconds
+        if (reelsScrollTimer) clearTimeout(reelsScrollTimer);
+        reelsScrollTimer = setTimeout(() => {
+          if (!reelsModal.classList.contains('active')) return;
+
+          // Freeze scrolling
+          reelsScrollTrack.classList.add('paused');
+          reelsFreezeOverlay.classList.add('active');
+
+          // Comic siren chime & meme voice shout
+          playSciFiChime('reels');
+          speakMemeReaction('DO NOT SCROLL REELLLLLLS! Stop scrolling reels! Start achieving goals!', { pitch: 1.35, rate: 1.05 });
+        }, 2400);
+      }
+
+      function spawnFloatingHeart() {
+        const viewport = document.getElementById('reels-viewport');
+        if (!viewport) return;
+        const heart = document.createElement('div');
+        heart.className = 'floating-reel-heart';
+        const icons = ['❤️', '🔥', '💖', '❤️‍🔥'];
+        heart.textContent = icons[Math.floor(Math.random() * icons.length)];
+        heart.style.left = `${Math.random() * 65 + 15}%`;
+        heart.style.bottom = `${Math.random() * 35 + 25}%`;
+        viewport.appendChild(heart);
+        setTimeout(() => heart.remove(), 1200);
+      }
+
+      function closeReelsModal() {
+        if (reelsModal) reelsModal.classList.remove('active');
+        if (reelsScrollTimer) clearTimeout(reelsScrollTimer);
+        if (reelsHeartInterval) clearInterval(reelsHeartInterval);
+      }
+
+      function focusFirstMarksInput() {
+        const firstRow = subjectsContainer.querySelector('.subject-row');
+        if (firstRow) {
+          const inp = firstRow.querySelector('.input-obtained-marks');
+          if (inp) {
+            inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            inp.focus();
+            inp.classList.add('input-error');
+            setTimeout(() => inp.classList.remove('input-error'), 1500);
+          }
+        }
+      }
+
+      reelsCloseXBtn.addEventListener('click', closeReelsModal);
+
+      reelsStudyNowBtn.addEventListener('click', () => {
+        closeReelsModal();
+        focusFirstMarksInput();
+      });
+
+      reelsReplayVoiceBtn.addEventListener('click', () => {
+        playSciFiChime('reels');
+        speakMemeReaction('DO NOT SCROLL REELLLLLLS! Stop scrolling reels! Start achieving goals!', { pitch: 1.35, rate: 1.05 });
+      });
+
+      reelsResumeScrollBtn.addEventListener('click', () => {
+        reelsScrollTrack.classList.remove('paused');
+        reelsFreezeOverlay.classList.remove('active');
+        if (reelsScrollTimer) clearTimeout(reelsScrollTimer);
+        reelsScrollTimer = setTimeout(() => {
+          reelsScrollTrack.classList.add('paused');
+          reelsFreezeOverlay.classList.add('active');
+          playSciFiChime('reels');
+          speakMemeReaction('DO NOT SCROLL REELLLLLLS! Stop scrolling reels! Start achieving goals!', { pitch: 1.35, rate: 1.05 });
+        }, 2800);
+      });
+
+      /* ------------------------------------------------------------------------
+         J. ROSE & WHITE LOTUS CELEBRATION ENGINE (> 60% & CGPA > 6.0)
+         ------------------------------------------------------------------------ */
+      const fxCtx = fxCanvas.getContext('2d');
+      let fxParticles = [];
+      let activeFlowersCelebration = null;
+      let fxAnimationId = null;
+
+      function resizeFXCanvas() {
+        fxCanvas.width = window.innerWidth;
+        fxCanvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeFXCanvas);
+      resizeFXCanvas();
+
+      function triggerFlowerBloomFX() {
+        activeFlowersCelebration = {
+          progress: 0,
+          scale: 0.15,
+          life: 0,
+          maxLife: 480,
+          alpha: 1
+        };
+
+        // 1. Floating Red Rose Petals (3D fluttering)
+        for (let i = 0; i < 45; i++) {
+          fxParticles.push({
+            type: 'rose-petal',
+            x: Math.random() * fxCanvas.width,
+            y: -20 - Math.random() * 120,
+            vx: (Math.random() - 0.45) * 2.5,
+            vy: Math.random() * 2.2 + 1.2,
+            rotX: Math.random() * Math.PI * 2,
+            rotY: Math.random() * Math.PI * 2,
+            rotZ: Math.random() * Math.PI * 2,
+            vRotX: (Math.random() - 0.5) * 0.045,
+            vRotZ: (Math.random() - 0.5) * 0.045,
+            size: Math.random() * 12 + 10,
+            alpha: 1,
+            decay: 0.0022
+          });
+        }
+
+        // 2. Floating Pure White Lotus Petals
+        for (let i = 0; i < 45; i++) {
+          fxParticles.push({
+            type: 'lotus-petal',
+            x: Math.random() * fxCanvas.width,
+            y: -20 - Math.random() * 120,
+            vx: (Math.random() - 0.55) * 2.5,
+            vy: Math.random() * 2.0 + 1.0,
+            rotX: Math.random() * Math.PI * 2,
+            rotY: Math.random() * Math.PI * 2,
+            rotZ: Math.random() * Math.PI * 2,
+            vRotX: (Math.random() - 0.5) * 0.04,
+            vRotZ: (Math.random() - 0.5) * 0.04,
+            size: Math.random() * 14 + 10,
+            alpha: 1,
+            decay: 0.0022
+          });
+        }
+
+        // 3. Golden & Celestial Sparkles
+        for (let i = 0; i < 90; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 4.5 + 1.2;
+          fxParticles.push({
+            type: 'sparkle',
+            x: fxCanvas.width * (Math.random() > 0.5 ? 0.32 : 0.68),
+            y: fxCanvas.height * 0.44,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: Math.random() * 4 + 2,
+            alpha: 1,
+            decay: Math.random() * 0.007 + 0.003,
+            color: Math.random() > 0.4 ? '#ffd700' : (Math.random() > 0.5 ? '#ffffff' : '#00f3ff')
+          });
+        }
+
+        startFXLoop();
+      }
+
+      function dismissFlowerCelebration() {
+        activeFlowersCelebration = null;
+        if (bannerDismissFlowersBtn) bannerDismissFlowersBtn.style.display = 'none';
+      }
+
+      function triggerGoldenSparklesFX() {
+        for (let i = 0; i < 60; i++) {
+          fxParticles.push({
+            type: 'sparkle',
+            x: Math.random() * fxCanvas.width,
+            y: Math.random() * fxCanvas.height,
+            vx: (Math.random() - 0.5) * 2,
+            vy: -Math.random() * 2 - 0.5,
+            size: Math.random() * 3.5 + 1.5,
+            alpha: 1,
+            decay: 0.008,
+            color: '#ffd700'
+          });
+        }
+        startFXLoop();
+      }
+
+      function startFXLoop() {
+        if (!fxAnimationId) {
+          fxAnimationId = requestAnimationFrame(updateFXLoop);
+        }
+      }
+
+      function updateFXLoop() {
+        fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+        let hasActiveElements = false;
+        const w = fxCanvas.width;
+        const h = fxCanvas.height;
+
+        // Render Red Rose and White Lotus blooming in celebration
+        if (activeFlowersCelebration) {
+          hasActiveElements = true;
+          activeFlowersCelebration.life++;
+
+          // Blooming progression: smooth cubic ease-out
+          if (activeFlowersCelebration.progress < 1) {
+            activeFlowersCelebration.progress += 0.012;
+          }
+
+          // Smooth 3D Zoom Effect
+          const easeZoom = Math.sin(Math.min(1, activeFlowersCelebration.progress) * Math.PI * 0.5);
+          const breathe = 1.0 + 0.025 * Math.sin(activeFlowersCelebration.life * 0.06);
+          activeFlowersCelebration.scale = (0.2 + 0.8 * easeZoom) * breathe;
+
+          // Fade out near end of life
+          if (activeFlowersCelebration.life > activeFlowersCelebration.maxLife - 60) {
+            activeFlowersCelebration.alpha = Math.max(0, (activeFlowersCelebration.maxLife - activeFlowersCelebration.life) / 60);
+          }
+
+          if (activeFlowersCelebration.life >= activeFlowersCelebration.maxLife) {
+            activeFlowersCelebration = null;
+            if (bannerDismissFlowersBtn) bannerDismissFlowersBtn.style.display = 'none';
+          } else {
+            const isNarrow = w < 768;
+            const roseX = isNarrow ? w * 0.28 : w * 0.32;
+            const lotusX = isNarrow ? w * 0.72 : w * 0.68;
+            const flowerY = isNarrow ? Math.max(h * 0.52, 380) : Math.max(h * 0.55, 410);
+            const baseScale = isNarrow ? Math.min(w, h) * 0.0014 : Math.min(w, h) * 0.00165;
+
+            // Draw Red Rose on Left
+            drawRedRose(fxCtx, roseX, flowerY, activeFlowersCelebration.progress, activeFlowersCelebration.scale * baseScale, activeFlowersCelebration.alpha);
+
+            // Draw Pure White Lotus on Right
+            drawWhiteLotus(fxCtx, lotusX, flowerY, activeFlowersCelebration.progress, activeFlowersCelebration.scale * baseScale, activeFlowersCelebration.alpha);
+
+            // Draw Holographic Pedestals & Labels
+            drawFlowerHoloLabels(fxCtx, roseX, lotusX, flowerY + 120 * (activeFlowersCelebration.scale * baseScale), activeFlowersCelebration.alpha);
+          }
+        }
+
+        // Render Floating Petals & Sparkles
+        for (let i = fxParticles.length - 1; i >= 0; i--) {
+          const p = fxParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0 || p.y > h + 60) {
+            fxParticles.splice(i, 1);
+            continue;
+          }
+
+          hasActiveElements = true;
+
+          if (p.type === 'sparkle') {
+            fxCtx.save();
+            fxCtx.globalAlpha = p.alpha;
+            fxCtx.fillStyle = p.color;
+            fxCtx.shadowColor = p.color;
+            fxCtx.shadowBlur = 10;
+            fxCtx.beginPath();
+            fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            fxCtx.fill();
+            fxCtx.restore();
+          } else if (p.type === 'rose-petal') {
+            p.rotX += p.vRotX;
+            p.rotZ += p.vRotZ;
+            fxCtx.save();
+            fxCtx.globalAlpha = p.alpha;
+            fxCtx.translate(p.x, p.y);
+            fxCtx.rotate(p.rotZ);
+            fxCtx.scale(Math.cos(p.rotX), 1);
+
+            const petalGrad = fxCtx.createLinearGradient(0, -p.size, 0, p.size);
+            petalGrad.addColorStop(0, '#ff4d6d');
+            petalGrad.addColorStop(0.4, '#c9002b');
+            petalGrad.addColorStop(1, '#590013');
+
+            fxCtx.fillStyle = petalGrad;
+            fxCtx.shadowColor = '#ff2a55';
+            fxCtx.shadowBlur = 8;
+            fxCtx.beginPath();
+            fxCtx.moveTo(0, p.size);
+            fxCtx.bezierCurveTo(-p.size * 0.9, p.size * 0.2, -p.size * 0.8, -p.size * 0.7, 0, -p.size);
+            fxCtx.bezierCurveTo(p.size * 0.8, -p.size * 0.7, p.size * 0.9, p.size * 0.2, 0, p.size);
+            fxCtx.fill();
+            fxCtx.restore();
+          } else if (p.type === 'lotus-petal') {
+            p.rotX += p.vRotX;
+            p.rotZ += p.vRotZ;
+            fxCtx.save();
+            fxCtx.globalAlpha = p.alpha;
+            fxCtx.translate(p.x, p.y);
+            fxCtx.rotate(p.rotZ);
+            fxCtx.scale(Math.cos(p.rotX), 1);
+
+            const lotusGrad = fxCtx.createLinearGradient(0, -p.size, 0, p.size);
+            lotusGrad.addColorStop(0, '#ffc2d1');
+            lotusGrad.addColorStop(0.3, '#ffffff');
+            lotusGrad.addColorStop(1, '#d8eef8');
+
+            fxCtx.fillStyle = lotusGrad;
+            fxCtx.shadowColor = 'rgba(0, 243, 255, 0.7)';
+            fxCtx.shadowBlur = 8;
+            fxCtx.beginPath();
+            fxCtx.moveTo(0, p.size);
+            fxCtx.bezierCurveTo(-p.size * 0.6, p.size * 0.1, -p.size * 0.7, -p.size * 0.8, 0, -p.size * 1.1);
+            fxCtx.bezierCurveTo(p.size * 0.7, -p.size * 0.8, p.size * 0.6, p.size * 0.1, 0, p.size);
+            fxCtx.fill();
+            fxCtx.restore();
+          }
+        }
+
+        if (hasActiveElements) {
+          fxAnimationId = requestAnimationFrame(updateFXLoop);
+        } else {
+          fxAnimationId = null;
+        }
+      }
+
+      /* ------------------------------------------------------------------------
+         DRAWING ONE RED ROSE BLOOMING (ORGANIC 3D LAYERED PETALS)
+         ------------------------------------------------------------------------ */
+      function drawRedRose(ctx, x, y, progress, baseScale, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(x, y);
+
+        const bloomFactor = Math.min(1, Math.max(0, progress));
+        const scale = baseScale * (0.35 + 0.65 * Math.sin(bloomFactor * Math.PI * 0.5));
+        ctx.scale(scale, scale);
+
+        // Crimson Glowing Aura
+        const aura = ctx.createRadialGradient(0, 0, 10, 0, 0, 140);
+        aura.addColorStop(0, 'rgba(255, 30, 70, 0.45)');
+        aura.addColorStop(0.5, 'rgba(180, 0, 45, 0.2)');
+        aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(0, 0, 140, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Thorny Stem & Leaves
+        ctx.save();
+        ctx.strokeStyle = '#00c875';
+        ctx.lineWidth = 7;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(0, 25);
+        ctx.bezierCurveTo(-15, 70, 20, 120, -5, 170);
+        ctx.stroke();
+
+        // Leaves
+        ctx.fillStyle = '#00a854';
+        ctx.strokeStyle = '#00ffa3';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-8, 85);
+        ctx.bezierCurveTo(-50, 75, -60, 105, -12, 100);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(8, 115);
+        ctx.bezierCurveTo(55, 105, 65, 135, 12, 130);
+        ctx.fill();
+        ctx.stroke();
+
+        // 5 Sepals at flower base
+        const sepalSpread = bloomFactor * 0.45;
+        for (let s = 0; s < 5; s++) {
+          const sepalAngle = (s * Math.PI * 2) / 5;
+          ctx.save();
+          ctx.rotate(sepalAngle);
+          ctx.fillStyle = '#007a3d';
+          ctx.beginPath();
+          ctx.moveTo(0, 15);
+          ctx.quadraticCurveTo(-10, 30 + sepalSpread * 20, 0, 45 + sepalSpread * 30);
+          ctx.quadraticCurveTo(10, 30 + sepalSpread * 20, 0, 15);
+          ctx.fill();
+          ctx.restore();
+        }
+        ctx.restore();
+
+        // Layer 1: Outer wide velvety petals (5 broad petals)
+        const outerPetals = 5;
+        const outerOpen = bloomFactor;
+        for (let i = 0; i < outerPetals; i++) {
+          const angle = (i * Math.PI * 2) / outerPetals + (Math.PI / 5);
+          const dist = 32 + outerOpen * 38;
+          ctx.save();
+          ctx.rotate(angle);
+          ctx.translate(0, -dist);
+
+          const grad = ctx.createLinearGradient(0, -35, 0, 35);
+          grad.addColorStop(0, '#ff3366');
+          grad.addColorStop(0.3, '#d60036');
+          grad.addColorStop(0.7, '#8f0022');
+          grad.addColorStop(1, '#4a0010');
+
+          ctx.fillStyle = grad;
+          ctx.shadowColor = '#ff0044';
+          ctx.shadowBlur = 12;
+
+          ctx.beginPath();
+          ctx.moveTo(0, 35);
+          ctx.bezierCurveTo(-45 - outerOpen * 15, 20, -50 - outerOpen * 10, -25, 0, -38 - outerOpen * 10);
+          ctx.bezierCurveTo(50 + outerOpen * 10, -25, 45 + outerOpen * 15, 20, 0, 35);
+          ctx.fill();
+
+          ctx.strokeStyle = 'rgba(255, 140, 170, 0.4)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Layer 2: Mid-tier overlapping petals (5 petals)
+        const midOpen = Math.min(1, bloomFactor * 1.2);
+        for (let i = 0; i < 5; i++) {
+          const angle = (i * Math.PI * 2) / 5;
+          const dist = 20 + midOpen * 25;
+          ctx.save();
+          ctx.rotate(angle);
+          ctx.translate(0, -dist);
+
+          const grad = ctx.createLinearGradient(0, -25, 0, 25);
+          grad.addColorStop(0, '#ff4d79');
+          grad.addColorStop(0.4, '#e60039');
+          grad.addColorStop(1, '#660018');
+
+          ctx.fillStyle = grad;
+          ctx.shadowColor = '#e60039';
+          ctx.shadowBlur = 10;
+
+          ctx.beginPath();
+          ctx.moveTo(0, 25);
+          ctx.bezierCurveTo(-32, 10, -36, -18, 0, -26);
+          ctx.bezierCurveTo(36, -18, 32, 10, 0, 25);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Layer 3: Inner curved petals (4 petals wrapping tightly)
+        const innerOpen = Math.min(1, bloomFactor * 1.4);
+        for (let i = 0; i < 4; i++) {
+          const angle = (i * Math.PI * 2) / 4 + Math.PI / 8;
+          const dist = 12 + innerOpen * 14;
+          ctx.save();
+          ctx.rotate(angle);
+          ctx.translate(0, -dist);
+
+          const grad = ctx.createLinearGradient(0, -18, 0, 18);
+          grad.addColorStop(0, '#ff6688');
+          grad.addColorStop(0.5, '#cc0033');
+          grad.addColorStop(1, '#4d0014');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(0, 18);
+          ctx.bezierCurveTo(-22, 6, -24, -12, 0, -18);
+          ctx.bezierCurveTo(24, -12, 22, 6, 0, 18);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Center: Iconic swirling Rose Bud Core
+        ctx.save();
+        ctx.rotate(bloomFactor * 0.5);
+        const coreGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, 16);
+        coreGrad.addColorStop(0, '#ff8099');
+        coreGrad.addColorStop(0.4, '#d60036');
+        coreGrad.addColorStop(1, '#4a0010');
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#ff99b3';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        for (let a = 0; a < Math.PI * 3.5; a += 0.2) {
+          const r = (a / (Math.PI * 3.5)) * 12;
+          const px = Math.cos(a) * r;
+          const py = Math.sin(a) * r;
+          if (a === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.restore();
+      }
+
+      /* ------------------------------------------------------------------------
+         DRAWING ONE PURE WHITE LOTUS BLOOMING (SACRED PADMA WITH GOLD STAMEN)
+         ------------------------------------------------------------------------ */
+      function drawWhiteLotus(ctx, x, y, progress, baseScale, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(x, y);
+
+        const bloomFactor = Math.min(1, Math.max(0, progress));
+        const scale = baseScale * (0.35 + 0.65 * Math.sin(bloomFactor * Math.PI * 0.5));
+        ctx.scale(scale, scale);
+
+        // Pure White Celestial Aura with Soft Cyan/Gold shimmer
+        const aura = ctx.createRadialGradient(0, 0, 10, 0, 0, 145);
+        aura.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+        aura.addColorStop(0.4, 'rgba(0, 243, 255, 0.22)');
+        aura.addColorStop(0.8, 'rgba(255, 215, 0, 0.15)');
+        aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(0, 0, 145, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Floating Emerald-Cyan Lotus Lily Pad & Water Ripples at the base
+        ctx.save();
+        ctx.translate(0, 35);
+        const rippleR = 75 + bloomFactor * 35;
+        ctx.strokeStyle = 'rgba(0, 243, 255, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 20, rippleR, rippleR * 0.35, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Green Lily Pad
+        const padGrad = ctx.createRadialGradient(0, 10, 10, 0, 10, 70);
+        padGrad.addColorStop(0, '#00e599');
+        padGrad.addColorStop(0.6, '#008f5d');
+        padGrad.addColorStop(1, '#00472e');
+        ctx.fillStyle = padGrad;
+        ctx.beginPath();
+        ctx.ellipse(0, 15, 75, 28, 0, 0.3, Math.PI * 2 - 0.3);
+        ctx.lineTo(0, 15);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Layer 1: Outer radiating pointed petals (10 petals spreading wide)
+        const outerPetals = 10;
+        for (let i = 0; i < outerPetals; i++) {
+          const angle = (i * Math.PI * 2) / outerPetals;
+          const len = 65 + bloomFactor * 32;
+          ctx.save();
+          ctx.rotate(angle);
+
+          const grad = ctx.createLinearGradient(0, 0, 0, -len);
+          grad.addColorStop(0, '#d8eef8');
+          grad.addColorStop(0.4, '#ffffff');
+          grad.addColorStop(0.9, '#ffffff');
+          grad.addColorStop(1, '#ffc2d1');
+
+          ctx.fillStyle = grad;
+          ctx.shadowColor = '#ffffff';
+          ctx.shadowBlur = 12;
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(-22, -len * 0.3, -26, -len * 0.75, 0, -len);
+          ctx.bezierCurveTo(26, -len * 0.75, 22, -len * 0.3, 0, 0);
+          ctx.fill();
+
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, -len);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+
+        // Layer 2: Mid-tier angled pointed petals (8 petals)
+        const midPetals = 8;
+        const midLen = 50 + bloomFactor * 26;
+        for (let i = 0; i < midPetals; i++) {
+          const angle = (i * Math.PI * 2) / midPetals + Math.PI / midPetals;
+          ctx.save();
+          ctx.rotate(angle);
+
+          const grad = ctx.createLinearGradient(0, 0, 0, -midLen);
+          grad.addColorStop(0, '#f0f9ff');
+          grad.addColorStop(0.5, '#ffffff');
+          grad.addColorStop(1, '#ffd1dc');
+
+          ctx.fillStyle = grad;
+          ctx.shadowColor = 'rgba(0, 243, 255, 0.6)';
+          ctx.shadowBlur = 10;
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(-18, -midLen * 0.3, -20, -midLen * 0.75, 0, -midLen);
+          ctx.bezierCurveTo(20, -midLen * 0.75, 18, -midLen * 0.3, 0, 0);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Layer 3: Inner upright petals (6 petals cradling the golden center)
+        const innerPetals = 6;
+        const innerLen = 35 + bloomFactor * 16;
+        for (let i = 0; i < innerPetals; i++) {
+          const angle = (i * Math.PI * 2) / innerPetals + Math.PI / 6;
+          ctx.save();
+          ctx.rotate(angle);
+
+          const grad = ctx.createLinearGradient(0, 0, 0, -innerLen);
+          grad.addColorStop(0, '#ffffff');
+          grad.addColorStop(0.7, '#ffffff');
+          grad.addColorStop(1, '#ffe6ed');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.bezierCurveTo(-14, -innerLen * 0.3, -15, -innerLen * 0.75, 0, -innerLen);
+          ctx.bezierCurveTo(15, -innerLen * 0.75, 14, -innerLen * 0.3, 0, 0);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Golden Lotus Stamen & Seed Pod Core
+        ctx.save();
+        const podR = 15 + bloomFactor * 8;
+        const podGrad = ctx.createRadialGradient(0, 0, 3, 0, 0, podR);
+        podGrad.addColorStop(0, '#ffffff');
+        podGrad.addColorStop(0.3, '#ffd700');
+        podGrad.addColorStop(0.8, '#ff9900');
+        podGrad.addColorStop(1, '#cc7a00');
+        ctx.fillStyle = podGrad;
+        ctx.shadowColor = '#ffd700';
+        ctx.shadowBlur = 18;
+        ctx.beginPath();
+        ctx.arc(0, 0, podR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Golden anther filament dots surrounding the pod
+        const anthers = 16;
+        ctx.fillStyle = '#fff4a3';
+        for (let a = 0; a < anthers; a++) {
+          const antherAngle = (a * Math.PI * 2) / anthers;
+          const antherDist = podR + 5;
+          const ax = Math.cos(antherAngle) * antherDist;
+          const ay = Math.sin(antherAngle) * antherDist;
+          ctx.beginPath();
+          ctx.arc(ax, ay, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        ctx.restore();
+      }
+
+      /* ------------------------------------------------------------------------
+         DRAWING HOLOGRAPHIC LABELS BENEATH EACH FLOWER
+         ------------------------------------------------------------------------ */
+      function drawFlowerHoloLabels(ctx, roseX, lotusX, labelY, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.font = 'bold 13px Orbitron, sans-serif';
+        ctx.textAlign = 'center';
+
+        // Red Rose Label Pill
+        ctx.fillStyle = 'rgba(10, 18, 42, 0.85)';
+        ctx.strokeStyle = 'var(--red-alert)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(roseX - 100, labelY, 200, 30, 15);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#ff2a55';
+        ctx.shadowColor = '#ff2a55';
+        ctx.shadowBlur = 8;
+        ctx.fillText('🌹 BLOOMING RED ROSE', roseX, labelY + 20);
+
+        // White Lotus Label Pill
+        ctx.fillStyle = 'rgba(10, 18, 42, 0.85)';
+        ctx.strokeStyle = '#00f3ff';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(lotusX - 105, labelY, 210, 30, 15);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#00f3ff';
+        ctx.shadowBlur = 8;
+        ctx.fillText('🪷 BLOOMING WHITE LOTUS', lotusX, labelY + 20);
+
+        ctx.restore();
+      }
+
+      /* ------------------------------------------------------------------------
+         J. CINEMATIC HUMAN EVOLUTION TO CYBER-FUTURE BACKGROUND
+         ------------------------------------------------------------------------ */
+      const bgCtx = evolutionCanvas.getContext('2d');
+      let stars = [];
+      let cyberParticles = [];
+      let timeOffset = 0;
+
+      function resizeBgCanvas() {
+        evolutionCanvas.width = window.innerWidth;
+        evolutionCanvas.height = window.innerHeight;
+        initBackgroundElements();
+      }
+      window.addEventListener('resize', resizeBgCanvas);
+
+      function initBackgroundElements() {
+        stars = [];
+        const numStars = Math.floor((evolutionCanvas.width * evolutionCanvas.height) / 5000);
+        for (let i = 0; i < numStars; i++) {
+          stars.push({
+            x: Math.random() * evolutionCanvas.width,
+            y: Math.random() * evolutionCanvas.height * 0.7,
+            size: Math.random() * 1.8 + 0.4,
+            alpha: Math.random() * 0.7 + 0.3,
+            blinkSpeed: Math.random() * 0.02 + 0.005
+          });
+        }
+
+        cyberParticles = [];
+        for (let i = 0; i < 45; i++) {
+          cyberParticles.push({
+            x: Math.random() * evolutionCanvas.width,
+            y: Math.random() * evolutionCanvas.height,
+            vx: (Math.random() - 0.5) * 0.4 + 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2 + 1,
+            color: Math.random() > 0.5 ? '#00f3ff' : '#b026ff',
+            alpha: Math.random() * 0.5 + 0.2
+          });
+        }
+      }
+
+      function drawEvolutionBackground() {
+        const w = evolutionCanvas.width;
+        const h = evolutionCanvas.height;
+        timeOffset += 0.015;
+
+        bgCtx.clearRect(0, 0, w, h);
+
+        // Sky gradient
+        const skyGrad = bgCtx.createLinearGradient(0, 0, w, h);
+        skyGrad.addColorStop(0, '#040711');
+        skyGrad.addColorStop(0.35, '#070f24');
+        skyGrad.addColorStop(0.75, '#0c1236');
+        skyGrad.addColorStop(1, '#020b1f');
+        bgCtx.fillStyle = skyGrad;
+        bgCtx.fillRect(0, 0, w, h);
+
+        // Stars
+        stars.forEach(st => {
+          st.alpha += Math.sin(timeOffset * 2 + st.x) * st.blinkSpeed;
+          const a = Math.max(0.15, Math.min(0.9, st.alpha));
+          bgCtx.fillStyle = `rgba(255, 255, 255, ${a})`;
+          bgCtx.beginPath();
+          bgCtx.arc(st.x, st.y, st.size, 0, Math.PI * 2);
+          bgCtx.fill();
+        });
+
+        // Cyber Particles
+        cyberParticles.forEach(cp => {
+          cp.x += cp.vx;
+          cp.y += cp.vy;
+          if (cp.x > w + 20) cp.x = -20;
+          if (cp.y > h + 20) cp.y = -20;
+          if (cp.y < -20) cp.y = h + 20;
+
+          bgCtx.fillStyle = cp.color;
+          bgCtx.globalAlpha = cp.alpha;
+          bgCtx.beginPath();
+          bgCtx.arc(cp.x, cp.y, cp.size, 0, Math.PI * 2);
+          bgCtx.fill();
+        });
+        bgCtx.globalAlpha = 1;
+
+        // Prehistoric landscape on the Left
+        bgCtx.save();
+        bgCtx.fillStyle = '#060a18';
+        bgCtx.beginPath();
+        bgCtx.moveTo(0, h * 0.72);
+        bgCtx.lineTo(w * 0.08, h * 0.65);
+        bgCtx.lineTo(w * 0.18, h * 0.7);
+        bgCtx.lineTo(w * 0.28, h * 0.62);
+        bgCtx.lineTo(w * 0.4, h * 0.75);
+        bgCtx.lineTo(w * 0.4, h);
+        bgCtx.lineTo(0, h);
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.restore();
+
+        // Futuristic Skyline on the Right
+        bgCtx.save();
+        const groundY = h * 0.88;
+        const towers = [
+          { x: 0.56, width: 35, height: 160, glow: '#00f3ff' },
+          { x: 0.62, width: 48, height: 230, glow: '#b026ff' },
+          { x: 0.68, width: 40, height: 190, glow: '#00f3ff' },
+          { x: 0.74, width: 55, height: 280, glow: '#00ffa3' },
+          { x: 0.81, width: 45, height: 210, glow: '#ff007f' },
+          { x: 0.87, width: 60, height: 320, glow: '#00f3ff' },
+          { x: 0.94, width: 45, height: 240, glow: '#b026ff' }
+        ];
+
+        towers.forEach(tw => {
+          const posX = tw.x * w;
+          const topY = groundY - tw.height;
+
+          const twGrad = bgCtx.createLinearGradient(posX, topY, posX, groundY);
+          twGrad.addColorStop(0, 'rgba(10, 25, 55, 0.85)');
+          twGrad.addColorStop(1, 'rgba(2, 6, 18, 0.95)');
+          bgCtx.fillStyle = twGrad;
+          bgCtx.fillRect(posX, topY, tw.width, tw.height);
+
+          bgCtx.strokeStyle = tw.glow;
+          bgCtx.lineWidth = 1.5;
+          bgCtx.shadowColor = tw.glow;
+          bgCtx.shadowBlur = 12;
+          bgCtx.strokeRect(posX, topY, tw.width, tw.height);
+
+          bgCtx.beginPath();
+          bgCtx.moveTo(posX + tw.width / 2, topY);
+          bgCtx.lineTo(posX + tw.width / 2, topY - 30);
+          bgCtx.stroke();
+
+          const beaconAlpha = Math.sin(timeOffset * 4 + posX) * 0.5 + 0.5;
+          bgCtx.fillStyle = tw.glow;
+          bgCtx.globalAlpha = beaconAlpha;
+          bgCtx.beginPath();
+          bgCtx.arc(posX + tw.width / 2, topY - 30, 3, 0, Math.PI * 2);
+          bgCtx.fill();
+          bgCtx.globalAlpha = 1;
+
+          bgCtx.shadowBlur = 0;
+          bgCtx.fillStyle = tw.glow;
+          bgCtx.globalAlpha = 0.25;
+          for (let row = topY + 15; row < groundY - 20; row += 16) {
+            for (let col = posX + 6; col < posX + tw.width - 6; col += 10) {
+              if (Math.sin(row * col + timeOffset) > 0.1) {
+                bgCtx.fillRect(col, row, 4, 6);
+              }
+            }
+          }
+          bgCtx.globalAlpha = 1;
+        });
+        bgCtx.restore();
+
+        // Perspective Cyber Grid Floor
+        bgCtx.save();
+        const horizGrad = bgCtx.createLinearGradient(0, groundY, 0, h);
+        horizGrad.addColorStop(0, 'rgba(8, 16, 40, 0.95)');
+        horizGrad.addColorStop(1, '#02050f');
+        bgCtx.fillStyle = horizGrad;
+        bgCtx.fillRect(0, groundY, w, h - groundY);
+
+        bgCtx.strokeStyle = 'rgba(0, 243, 255, 0.15)';
+        bgCtx.lineWidth = 1;
+        for (let y = groundY; y < h; y += 14) {
+          bgCtx.beginPath();
+          bgCtx.moveTo(0, y);
+          bgCtx.lineTo(w, y);
+          bgCtx.stroke();
+        }
+
+        const vanishX = w * 0.75;
+        const vanishY = groundY;
+        for (let x = -w * 0.5; x < w * 1.5; x += 65) {
+          bgCtx.beginPath();
+          bgCtx.moveTo(vanishX, vanishY);
+          bgCtx.lineTo(x, h);
+          bgCtx.stroke();
+        }
+        bgCtx.restore();
+
+        // Draw human evolution silhouettes
+        drawHumanSilhouettes(w, groundY);
+
+        requestAnimationFrame(drawEvolutionBackground);
+      }
+
+      function drawHumanSilhouettes(w, groundY) {
+        bgCtx.save();
+        bgCtx.fillStyle = '#020612';
+        bgCtx.strokeStyle = 'rgba(0, 243, 255, 0.4)';
+
+        // 1. Primitive Human Silhouette (Origin)
+        drawHominid(w * 0.14, groundY, 0.85);
+
+        // 2. Classical Scholar
+        drawClassicalScholar(w * 0.30, groundY, 0.95);
+
+        // 3. Modern Human with Laptop
+        drawModernHuman(w * 0.48, groundY, 1.0);
+
+        // 4. Cyber Future Transhuman (3026)
+        drawCyberFuturisticHuman(w * 0.65, groundY, 1.08);
+
+        bgCtx.restore();
+      }
+
+      function drawHominid(x, y, scale) {
+        bgCtx.save();
+        bgCtx.translate(x, y);
+        bgCtx.scale(scale, scale);
+        bgCtx.fillStyle = '#030816';
+        bgCtx.strokeStyle = 'rgba(255, 140, 0, 0.3)';
+        bgCtx.lineWidth = 1.2;
+
+        bgCtx.beginPath();
+        bgCtx.arc(10, -78, 9, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(6, -69);
+        bgCtx.lineTo(14, -42);
+        bgCtx.lineTo(2, -26);
+        bgCtx.lineTo(-6, -65);
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(10, -26);
+        bgCtx.lineTo(16, 0);
+        bgCtx.moveTo(0, -26);
+        bgCtx.lineTo(-8, 0);
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(8, -58);
+        bgCtx.lineTo(20, -42);
+        bgCtx.lineTo(24, -55);
+        bgCtx.stroke();
+
+        bgCtx.strokeStyle = 'rgba(255, 170, 50, 0.5)';
+        bgCtx.beginPath();
+        bgCtx.moveTo(24, -95);
+        bgCtx.lineTo(24, 0);
+        bgCtx.stroke();
+        bgCtx.restore();
+      }
+
+      function drawClassicalScholar(x, y, scale) {
+        bgCtx.save();
+        bgCtx.translate(x, y);
+        bgCtx.scale(scale, scale);
+        bgCtx.fillStyle = '#030816';
+        bgCtx.strokeStyle = 'rgba(0, 200, 255, 0.35)';
+        bgCtx.lineWidth = 1.2;
+
+        bgCtx.beginPath();
+        bgCtx.arc(0, -88, 9, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(-6, -78);
+        bgCtx.lineTo(8, -78);
+        bgCtx.lineTo(12, -20);
+        bgCtx.lineTo(-14, -20);
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(6, -20);
+        bgCtx.lineTo(8, 0);
+        bgCtx.moveTo(-6, -20);
+        bgCtx.lineTo(-6, 0);
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(4, -70);
+        bgCtx.lineTo(16, -55);
+        bgCtx.lineTo(22, -62);
+        bgCtx.stroke();
+        bgCtx.restore();
+      }
+
+      function drawModernHuman(x, y, scale) {
+        bgCtx.save();
+        bgCtx.translate(x, y);
+        bgCtx.scale(scale, scale);
+        bgCtx.fillStyle = '#030816';
+        bgCtx.strokeStyle = 'rgba(0, 243, 255, 0.45)';
+        bgCtx.lineWidth = 1.3;
+
+        bgCtx.beginPath();
+        bgCtx.arc(0, -92, 9, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(-7, -82);
+        bgCtx.lineTo(7, -82);
+        bgCtx.lineTo(8, -35);
+        bgCtx.lineTo(-8, -35);
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(5, -35);
+        bgCtx.lineTo(12, 0);
+        bgCtx.moveTo(-5, -35);
+        bgCtx.lineTo(-10, 0);
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(4, -72);
+        bgCtx.lineTo(18, -60);
+        bgCtx.lineTo(14, -50);
+        bgCtx.stroke();
+
+        bgCtx.fillStyle = '#00f3ff';
+        bgCtx.shadowColor = '#00f3ff';
+        bgCtx.shadowBlur = 8;
+        bgCtx.fillRect(15, -62, 10, 2);
+        bgCtx.shadowBlur = 0;
+        bgCtx.restore();
+      }
+
+      function drawCyberFuturisticHuman(x, y, scale) {
+        bgCtx.save();
+        bgCtx.translate(x, y);
+        bgCtx.scale(scale, scale);
+        bgCtx.fillStyle = '#030816';
+        bgCtx.strokeStyle = 'rgba(176, 38, 255, 0.6)';
+        bgCtx.lineWidth = 1.5;
+
+        bgCtx.beginPath();
+        bgCtx.arc(0, -96, 10, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.fillStyle = '#00f3ff';
+        bgCtx.shadowColor = '#00f3ff';
+        bgCtx.shadowBlur = 12;
+        bgCtx.fillRect(2, -99, 10, 4);
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(-10, -84);
+        bgCtx.lineTo(10, -84);
+        bgCtx.lineTo(12, -40);
+        bgCtx.lineTo(-12, -40);
+        bgCtx.closePath();
+        bgCtx.fill();
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(6, -40);
+        bgCtx.lineTo(14, 0);
+        bgCtx.moveTo(-6, -40);
+        bgCtx.lineTo(-8, 0);
+        bgCtx.stroke();
+
+        bgCtx.beginPath();
+        bgCtx.moveTo(8, -75);
+        bgCtx.lineTo(24, -75);
+        bgCtx.stroke();
+
+        const holoY = -85 + Math.sin(timeOffset * 3) * 4;
+        bgCtx.strokeStyle = '#b026ff';
+        bgCtx.shadowColor = '#b026ff';
+        bgCtx.shadowBlur = 10;
+        bgCtx.strokeRect(26, holoY, 12, 12);
+        bgCtx.restore();
+      }
+
+      /* ------------------------------------------------------------------------
+         K. INITIALIZATION
+         ------------------------------------------------------------------------ */
+      renderSubjects();
+      updatePercentageDisplay(calculatePercentageMetrics());
+      updateCgpaDisplay(null);
+      renderSummaryReportTable();
+      resizeBgCanvas();
+      drawEvolutionBackground();
+
+    })();
+  </script>
+</body>
+</html>

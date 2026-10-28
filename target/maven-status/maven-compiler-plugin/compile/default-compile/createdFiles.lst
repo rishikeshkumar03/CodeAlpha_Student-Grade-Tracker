@@ -1,0 +1,12 @@
+com\codealpha\gradetracker\model\SemesterRecord.class
+com\codealpha\gradetracker\service\StudentStorageService.class
+com\codealpha\gradetracker\model\StudentGradeRequest.class
+com\codealpha\gradetracker\model\GradeAnalysisResult.class
+com\codealpha\gradetracker\model\StudentSummary.class
+com\codealpha\gradetracker\model\GradingSchemeInfo.class
+com\codealpha\gradetracker\service\GradeCalculatorService.class
+com\codealpha\gradetracker\service\StudentStorageService$1.class
+com\codealpha\gradetracker\CodeAlphaGradeTrackerApplication.class
+com\codealpha\gradetracker\model\SubjectMark.class
+com\codealpha\gradetracker\model\SubjectGrade.class
+com\codealpha\gradetracker\controller\GradeTrackerController.class
